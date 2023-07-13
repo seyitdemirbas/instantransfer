@@ -1,0 +1,101 @@
+import { createSlice,createAsyncThunk} from '@reduxjs/toolkit'
+import { addFileToDatabase } from './myFilesSlice';
+import { changeFileRouteNameDB, returnFile,deleteFileFromDatabase } from './filePageSlice';
+import Parse from 'parse';
+
+export const getCurrentTime = createAsyncThunk("genral/getCurrentTime", async (req, {rejectWithValue}) => {
+  const data = await Parse.Cloud.run('getServerTime')
+  .catch((err)=>{
+    // console.log(err)
+    const error = {
+        type: "error",
+        msg: "Something went wrong."
+    }
+    return rejectWithValue(error)
+  })
+
+  return data.toJSON()
+});
+
+const initialState = {
+  progress: {
+    uploadValue: 0,
+    downloadValue: 0
+  },
+  alert: {
+    type: {},
+    msg: {}
+  },
+  time: {
+    currentTime : {}
+  },
+  user: {
+    info: {
+      isAnon: true,
+      username:'',
+      email:''
+    },
+    trigger: 0,
+  }
+}
+
+export const generalSlice = createSlice({
+  name: 'general',
+  initialState,
+  reducers: {
+    changeUploadProgressValue: (state,action) => {
+      // Redux Toolkit allows us to write "mutating" logic in reducers. It
+      // doesn't actually mutate the state because it uses the Immer library,
+      // which detects changes to a "draft state" and produces a brand new
+      // immutable state based off those changes
+      state.progress.uploadValue = action.payload
+    },
+    changeDownloadProgressValue: (state,action) => {
+      // Redux Toolkit allows us to write "mutating" logic in reducers. It
+      // doesn't actually mutate the state because it uses the Immer library,
+      // which detects changes to a "draft state" and produces a brand new
+      // immutable state based off those changes
+      state.progress.downloadValue = action.payload
+    },
+    setAlert: (state,action) => {
+      state.alert = action.payload
+    },
+    setUser: (state,action) => {
+      state.user.info = action.payload
+    },
+    setUserTrigger: (state,action) => {
+      state.user.trigger += 1
+    }
+  },
+    extraReducers: {
+      [getCurrentTime.fulfilled]: (state, action) => {
+        state.time.currentTime = action.payload
+      },
+      [getCurrentTime.rejected]: (state, action) => {
+        state.alert = action.payload
+      },
+      [addFileToDatabase.rejected]: (state, action) => {
+        state.alert = action.payload
+      },
+      [returnFile.rejected]: (state, action) => {
+        state.alert = action.payload
+      },
+      [changeFileRouteNameDB.rejected]: (state, action) => {
+        state.alert = action.payload
+      },
+      [changeFileRouteNameDB.fulfilled]: (state, action) => {
+        state.alert = {type:"success",msg:"Route is succesfully changed."}
+      },
+      [deleteFileFromDatabase.rejected]: (state, action) => {
+        state.alert = action.payload
+      },
+      [deleteFileFromDatabase.fulfilled]: (state, action) => {
+        state.alert = action.payload
+      }
+  }
+})
+
+// Action creators are generated for each case reducer function
+export const { changeUploadProgressValue , changeDownloadProgressValue,setAlert,setUser,setUserTrigger } = generalSlice.actions
+
+export default generalSlice.reducer
