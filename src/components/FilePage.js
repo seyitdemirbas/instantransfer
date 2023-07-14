@@ -57,10 +57,12 @@ function FilePage(props) {
                     }
                     {progressValue > 0 && Loading.downloadFileValue &&
                         <Progress
+                        labelProgress
+                        labelText
                         progress={progressValue}
-                        label="Downloading..."
-                        labelPosition="outside"
-                        labelProgress={true}
+                        progressLabelPosition="outside"
+                        textLabel="Downloading..."
+                        textLabelPosition="outside"
                         />
                     }
                 </Card>

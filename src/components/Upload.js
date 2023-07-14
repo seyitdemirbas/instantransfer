@@ -62,10 +62,12 @@ const handleSubmit = (e) => {
       <div>
       {progressValue > 0 && submitLoading &&
         <Progress
+          labelProgress
+          labelText
           progress={progressValue}
-          label="Uploading..."
-          labelPosition="outside"
-          labelProgress={true}
+          progressLabelPosition="outside"
+          textLabel="Uploading..."
+          textLabelPosition="outside"
         />
       }
       </div>
