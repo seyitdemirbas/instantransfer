@@ -1,30 +1,122 @@
+/* eslint-disable linebreak-style */
 
-Parse.Cloud.define('hello', req => {
+Parse.Cloud.beforeSaveFile(async (request) => {
+  const axios = require('axios');
+  const { file, user } = request;
+  file.addMetadata('createdById', user.id);
+  file.addTag('createdById', user.id);
 
-  req.log.info(req);
-  return 'Hi';
+  const query = await axios.get('https://www.google.com/recaptcha/api/siteverify', {
+    params: {
+      secret: process.env.CPATCHA_SECRET,
+      response: file.metadata().cpatcha ? file.metadata().cpatcha : '00'
+    }
+  })
+    .then(function (response) {
+      // console.log(response.data.success);
+      return response.data.success
+    })
+    .catch(function () {
+      return false;
+    })
+
+  if(!query === true) {
+    throw "Error Cpatcha is not true";
+  }
+  // console.log(file.metadata().cpatcha)
+  // throw "Error Cpatcha is not true";
 });
 
-Parse.Cloud.define('asyncFunction', async req => {
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  req.log.info(req);
-  return 'Hi async';
-});
+Parse.Cloud.beforeSave(Parse.User, async (req) => {
+  const axios = require('axios');
 
-Parse.Cloud.define('someFunction', () => {
-  return 'Hello world123';
-}, {
-  rateLimit: {
-    requestTimeWindow: 60 * 60 * 1000,
-    requestCount: 3,
+  const cpatcha = await req.object.get("cpatcha")
+
+  if(cpatcha) {
+    const query = await axios.get('https://www.google.com/recaptcha/api/siteverify', {
+      params: {
+        secret: process.env.CPATCHA_SECRET,
+        response: cpatcha ? cpatcha : '000'
+      }
+    })
+      .then(function (response) {
+        // console.log(response.data.success);
+        return response.data.success
+      })
+      .catch(function () {
+        return false;
+      })
+
+    if(!query === true) {
+      throw "Error Cpatcha is not true";
+    }
+
   }
 });
+
+Parse.Cloud.afterSave(Parse.User, async (req) => {
+  const cpatcha = await req.object.get("cpatcha")
+  if(cpatcha) {
+    const parseQuery = new Parse.Query(Parse.User);
+    parseQuery.equalTo("objectId", req.object.id);
+    const object = await parseQuery.first({ useMasterKey: true });
+    // console.log('OBJECCCC===' + JSON.stringify(object))
+    object.set("cpatcha", undefined)
+    object.save(null,{ useMasterKey: true })
+  }
+});
+
+
+Parse.Cloud.define('contantUs', async req => {
+  const axios = require('axios');
+  const cpatcha = req.params.cpatcha
+  const query = await axios.get('https://www.google.com/recaptcha/api/siteverify', {
+    params: {
+      secret: process.env.CPATCHA_SECRET,
+      response: cpatcha ? cpatcha : '000'
+    }
+  })
+    .then(function (response) {
+      // console.log(response.data.success);
+      return response.data.success
+    })
+    .catch(function () {
+      return false;
+    })
+
+  if(!query === true) {
+    throw "Error, Cpatcha is not true";
+  }
+
+  const { SMTPClient } = require('emailjs');
+
+  const client = new SMTPClient({
+    user: process.env.SMTP_USERNAME,
+    password: process.env.SMTP_PASSWORD,
+    host: process.env.SMTP_HOST,
+    ssl: true,
+  });
+
+  try {
+    const senderEmailText = 'Original Sender Email: ' + req.params.email + '\n\n';
+
+    await client.sendAsync({
+      text:    senderEmailText + req.params.message,
+      from:   process.env.APP_NAME + ' Contact Us',
+      to: process.env.SMTP_CONTACT_US_PAGE_TO ,
+      subject: req.params.subject
+    });
+    return 'Message has been sent.';
+  } catch (err) {
+    return 'Error, Failed to send message.';
+  }
+});
+
 
 Parse.Cloud.define('getServerTime', async () => {
   const dateToday = new Date();
   return dateToday;
 });
-
 
 Parse.Cloud.define('changeFileRouteName', async (request) => {
   // throw "Every user must have an email address.";
@@ -65,12 +157,6 @@ Parse.Cloud.define('changeFileRouteName', async (request) => {
   })
 
   return await results
-}, {
-  rateLimit: {
-    requestTimeWindow: 15 * 60 * 1000,
-    requestCount: 10,
-    errorResponseMessage: 'Too many requests!',
-  }
 });
 
 
@@ -99,36 +185,6 @@ Parse.Cloud.define('deleteFile', async (request) => {
   })
   return await results
 });
-
-
-// Adding metadata and tags
-Parse.Cloud.beforeSaveFile(async (request) => {
-  const axios = require('axios');
-  const { file, user } = request;
-  file.addMetadata('createdById', user.id);
-  file.addTag('createdById', user.id);
-
-  const query = await axios.get('https://www.google.com/recaptcha/api/siteverify', {
-    params: {
-      secret: '***REMOVED***',
-      response: file.metadata().cpatcha ? file.metadata().cpatcha : '00'
-    }
-  })
-    .then(function (response) {
-      // console.log(response.data.success);
-      return response.data.success
-    })
-    .catch(function () {
-      return false;
-    })
-
-  if(!query === true) {
-    throw "Error Cpatcha is not true";
-  }
-  // console.log(file.metadata().cpatcha)
-  // throw "Error Cpatcha is not true";
-});
-
 
 Parse.Cloud.afterSaveFile(async (request) => {
   const randomWords = require('random-words');
@@ -216,89 +272,4 @@ Parse.Cloud.job("removeExpiredFiles", async () => {
   });
 
   return ("Successfully deleted " + results.length + " expire files.");
-});
-
-Parse.Cloud.beforeSave(Parse.User, async (req) => {
-  const axios = require('axios');
-
-  const cpatcha = await req.object.get("cpatcha")
-
-  if(cpatcha) {
-    const query = await axios.get('https://www.google.com/recaptcha/api/siteverify', {
-      params: {
-        secret: '***REMOVED***',
-        response: cpatcha ? cpatcha : '000'
-      }
-    })
-      .then(function (response) {
-        // console.log(response.data.success);
-        return response.data.success
-      })
-      .catch(function () {
-        return false;
-      })
-
-    if(!query === true) {
-      throw "Error Cpatcha is not true";
-    }
-
-  }
-});
-
-Parse.Cloud.afterSave(Parse.User, async (req) => {
-  const cpatcha = await req.object.get("cpatcha")
-  if(cpatcha) {
-    const parseQuery = new Parse.Query(Parse.User);
-    parseQuery.equalTo("objectId", req.object.id);
-    const object = await parseQuery.first({ useMasterKey: true });
-    // console.log('OBJECCCC===' + JSON.stringify(object))
-    object.set("cpatcha", undefined)
-    object.save(null,{ useMasterKey: true })
-  }
-});
-
-
-Parse.Cloud.define('contantUs', async req => {
-  const axios = require('axios');
-  const cpatcha = req.params.cpatcha
-  const query = await axios.get('https://www.google.com/recaptcha/api/siteverify', {
-    params: {
-      secret: '***REMOVED***',
-      response: cpatcha ? cpatcha : '000'
-    }
-  })
-    .then(function (response) {
-      // console.log(response.data.success);
-      return response.data.success
-    })
-    .catch(function () {
-      return false;
-    })
-
-  if(!query === true) {
-    throw "Error, Cpatcha is not true";
-  }
-
-  const { SMTPClient } = require('emailjs');
-
-  const client = new SMTPClient({
-    user: '***REMOVED***',
-    password: '***REMOVED***',
-    host: 'smtp.gmail.com',
-    ssl: true,
-  });
-
-  try {
-    const senderEmailText = 'Original Sender Email: ' + req.params.email + '\n\n';
-
-    await client.sendAsync({
-      text:    senderEmailText + req.params.message,
-      from:   'Instant Transfer Contact Us',
-      to: '***REMOVED***',
-      subject: req.params.subject
-    });
-    return 'Message has been sent.';
-  } catch (err) {
-    return 'Error, Failed to send message.';
-  }
 });

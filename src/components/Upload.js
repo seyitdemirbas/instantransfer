@@ -59,17 +59,17 @@ const handleSubmit = (e) => {
           <ButtonWithLoading loadingState={submitLoading} buttonName='Submit'/>
       </form>
       
-      <div>
-      {progressValue > 0 && submitLoading &&
-        <Progress
-          labelProgress
-          labelText
-          progress={progressValue}
-          progressLabelPosition="outside"
-          textLabel="Uploading..."
-          textLabelPosition="outside"
-        />
-      }
+      <div className='mt-2'>
+        {progressValue > 0 && submitLoading &&
+          <Progress
+            labelProgress
+            labelText
+            progress={progressValue}
+            progressLabelPosition="outside"
+            textLabel="Uploading..."
+            textLabelPosition="outside"
+          />
+        }
       </div>
     </React.Fragment>
   )

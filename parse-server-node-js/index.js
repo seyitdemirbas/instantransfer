@@ -1,23 +1,26 @@
+/* eslint-disable linebreak-style */
 // Example express application adding the parse-server module to expose Parse
 // compatible API routes.
 
 import express from 'express';
-import { ParseServer } from 'parse-server';
-import path from 'path';
-const __dirname = path.resolve();
 import http from 'http';
 import ParseDashboard from 'parse-dashboard';
+import { ParseServer } from 'parse-server';
+import path from 'path';
+import 'dotenv/config'
+const __dirname = path.resolve();
+
 
 export const config = {
   databaseURI:
-    process.env.DATABASE_URI || process.env.MONGODB_URI || 'mongodb://localhost:27017/dev',
+    process.env.DATABASE_URI || process.env.MONGODB_URI ,
   cloud: process.env.CLOUD_CODE_MAIN || __dirname + '/cloud/main.cjs',
-  appId: process.env.APP_ID || '123456',
-  appName: 'Instant Transfer',
-  publicServerURL: 'http://localhost:1337/parse',
-  javascriptKey: '123456',
-  masterKey: process.env.MASTER_KEY || '123456', //Add your master key here. Keep it secret!
-  serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse', // Don't forget to change to https if needed
+  appId: process.env.APP_ID ,
+  appName: process.env.APP_NAME,
+  masterKey: process.env.MASTER_KEY, //Add your master key here. Keep it secret!
+  javascriptKey: process.env.JAVASCRIPT_KEY ,
+  serverURL: process.env.SERVER_URL , // Don't forget to change to https if needed
+  publicServerURL: process.env.PUBLIC_SERVER_URL,
   allowClientClassCreation: false,
   liveQuery: {
     classNames: ['Posts', 'Comments'], // List of classes to support for query subscriptions
@@ -43,11 +46,11 @@ export const config = {
   emailAdapter: {
     module: 'parse-smtp-template',
     options: {
-      port: 587,
-      host: "smtp.gmail.com",
-      user: "***REMOVED***",
-      password: "***REMOVED***",
-      fromAddress: '***REMOVED***',
+      port: process.env.SMTP_PORT,
+      host: process.env.SMTP_HOST,
+      user: process.env.SMTP_USERNAME,
+      password: process.env.SMTP_PASSWORD,
+      fromAddress: process.env.SMTP_FROM_ADRESS,
       template: true,
       templatePath: "views/templates/template.html",
 
