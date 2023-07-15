@@ -83,10 +83,10 @@ const options = { allowInsecureHTTP: false };
 const dashboard = new ParseDashboard({
   "apps": [
     {
-      "serverURL": "http://localhost:1337/parse",
-      "appId": "123456",
-      "masterKey": "123456",
-      "appName": "Instant Transfer",
+      "serverURL": process.env.SERVER_URL,
+      "appId": process.env.APP_ID,
+      "masterKey": process.env.MASTER_KEY,
+      "appName": process.env.APP_NAME,
       "iconName": "",
       "primaryBackgroundColor": "",
       "secondaryBackgroundColor": ""
@@ -94,8 +94,8 @@ const dashboard = new ParseDashboard({
   ],
   "users": [
     {
-      "user":"syt55",
-      "pass":"***REMOVED***"
+      "user": process.env.PARSEDASHBOARD_USERNAME,
+      "pass": process.env.PARSEDASHBOARD_PASSWORD
     }
   ]
 }, options);

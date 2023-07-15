@@ -47,8 +47,9 @@ const handleSubmit = (e) => {
           <Label
               htmlFor="file"
               value="Upload a file (Max 20 Mb)"
+              className='text-base'
           />
-          </div>
+        </div>
           <FileInput
           id="file"
           helperText="Select a file and transfer your file over the web between devices in seconds"

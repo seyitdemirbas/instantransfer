@@ -34,8 +34,8 @@ const RecentFiles = () => {
     return (
     
       <React.Fragment>
-      <div className='overflow-x-auto'>
-      <Table striped={true}>
+      {/* <div className='overflow-x-auto'> */}
+      <Table className= 'overflow-x-auto' striped={true}>
         <Table.Head>
           <Table.HeadCell>
               Name
@@ -61,7 +61,7 @@ const RecentFiles = () => {
           }
         </Table.Body>
       </Table>
-      </div>
+      {/* </div> */}
       </React.Fragment>
   
     )
