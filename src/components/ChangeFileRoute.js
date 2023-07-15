@@ -44,35 +44,34 @@ const ChangeFileRoute = (props) => {
     
 
   return (
-    <h4 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-        <IconContext.Provider value={{ size:"1.3em", color: "#9ca3af", className: "inline-block mr-2 -mt-2" }}>
-            <AiOutlineLink/>
-        </IconContext.Provider>
-        {!isShown &&
-            <span className='inline-block'>
-                <Tooltip content="Click to Copy">
-                    <div onClick={handleCopy}>
-                        <a className='hover:text-gray-500' onClick={(e) => {e.preventDefault()}} href={window.location.href}>{window.location.href}</a>
-                    </div>
-                </Tooltip>
-            </span>
-        }
-        {props.currentFile.createdBy === Parse.User.current().id &&
-        <React.Fragment>
+    <div className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+        <div className='flex items-center'>
+            <div>
+                <IconContext.Provider value={{ size:"1.3em", color: "#9ca3af", className: "mr-2" }}>
+                    <AiOutlineLink/>
+                </IconContext.Provider>
+            </div>
             {!isShown &&
-                <div onClick={handleClick} className='inline-block cursor-pointer'>
-                    <Tooltip content="Click to change route">
-                        <IconContext.Provider value={{ size:"1.2em", color: "#9ca3af", className: "hover:!text-[#12b3c0] pulse inline-block ml-2 -mt-1" }}>
-                            <AiFillEdit/>
-                        </IconContext.Provider>
+                <div onClick={handleCopy} className='truncate'>
+                    <Tooltip content="Click to Copy">
+                        <a className='hover:text-gray-500' onClick={(e) => {e.preventDefault()}} href={window.location.href}>{window.location.href}</a>
                     </Tooltip>
                 </div>
             }
-            {isShown &&
-                <span className='inline-block align-text-bottom'>
-                <form onSubmit={e=>handleSubmit(e)}>
-                    <span className='inline-block'>
-                        <TextInput
+            {props.currentFile.createdBy === Parse.User.current().id &&
+            <React.Fragment>
+                {!isShown &&
+                    <div onClick={handleClick} className='cursor-pointer'>
+                        <Tooltip content="Click to change route">
+                            <IconContext.Provider value={{ size:"1.2em", color: "#9ca3af", className: "hover:!text-[#12b3c0] pulse ml-2" }}>
+                                <AiFillEdit/>
+                            </IconContext.Provider>
+                        </Tooltip>
+                    </div>
+                }
+                {isShown &&
+                    <form className='flex items-center' onSubmit={e=>handleSubmit(e)}>
+                        <TextInput className='!text-xs'
                             id="routerInput"
                             sizing="sm"
                             required={true}
@@ -80,8 +79,6 @@ const ChangeFileRoute = (props) => {
                             autoFocus
                             addon={window.location.origin+"/"}
                         />
-                    </span>
-                    <span className='inline-block'>
                         <Button disabled={props.Loading.routeChangeValue ? true : false} type="submit" size="xs">
                         {props.Loading.routeChangeValue
                         ? <div className="mr-3">
@@ -93,13 +90,12 @@ const ChangeFileRoute = (props) => {
                         : "Change"
                         }
                         </Button>
-                    </span>
-                </form>
-            </span>
+                    </form>
+                }
+            </React.Fragment>
             }
-        </React.Fragment>
-        }
-    </h4>
+        </div>
+    </div>
   )
 }
 

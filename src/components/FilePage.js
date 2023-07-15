@@ -40,10 +40,14 @@ function FilePage(props) {
                 <React.Fragment>
                 <Card>
                     <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                        <IconContext.Provider value={{ size:"1.3em", color: "#9ca3af", className: "inline-block mr-2 -mt-2" }}>
-                            <GetMimeToIcon mimeType={currentFile.fileType}/>
-                        </IconContext.Provider>
-                        <span className='inline-block'>{currentFile.fileName}</span>
+                        <div className='flex'>
+                        <div>
+                            <IconContext.Provider value={{ size:"1.3em", color: "#9ca3af", className: "mr-2" }}>
+                                <GetMimeToIcon mimeType={currentFile.fileType}/>
+                            </IconContext.Provider>
+                        </div>
+                        <span className='truncate'>{currentFile.fileName}</span>
+                        </div>
                     </h5>
                     <ChangeFileRoute currentFile={currentFile} Loading={Loading} navigation={navigationState}/>
                     <p className="font-normal text-gray-700 dark:text-gray-400">

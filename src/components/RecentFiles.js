@@ -34,13 +34,13 @@ const RecentFiles = () => {
     return (
     
       <React.Fragment>
-      
+      <div className='overflow-x-auto'>
       <Table striped={true}>
         <Table.Head>
           <Table.HeadCell>
               Name
           </Table.HeadCell>
-          <Table.HeadCell>
+          <Table.HeadCell className='hidden md:table-cell'>
               Size
           </Table.HeadCell>
           <Table.HeadCell>
@@ -61,6 +61,7 @@ const RecentFiles = () => {
           }
         </Table.Body>
       </Table>
+      </div>
       </React.Fragment>
   
     )
