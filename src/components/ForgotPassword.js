@@ -14,8 +14,6 @@ function ForgotPassword() {
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
-    console.log('test')
-
     const requestPasswordReset = (e) => {
         e.preventDefault();
         setLoading(true)

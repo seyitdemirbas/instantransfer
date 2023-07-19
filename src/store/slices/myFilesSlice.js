@@ -87,7 +87,7 @@ export const addFileToDatabase = createAsyncThunk("myfiles/addFileToDatabase", a
             return data;
         })
         .catch((err)=>{
-            console.log(err)
+            // console.log(err)
             const error = {
                 type: "error",
                 msg: "Something went wrong. 2"

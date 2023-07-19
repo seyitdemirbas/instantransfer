@@ -15,6 +15,11 @@ const ChangeFileRoute = (props) => {
     const isComponentMounted = useComponentDidMount()
     const navigate = useNavigate()
 
+    const locationHost = (window.location.host.indexOf('www.') && window.location.host) || window.location.host.replace('www.', '')
+    const locationPathName = window.location.pathname;
+    const cleanUrl = locationHost + locationPathName
+
+
     const handleClick = event => {
       // 👇️ toggle shown state
       setIsShown(current => !current);
@@ -54,7 +59,7 @@ const ChangeFileRoute = (props) => {
             {!isShown &&
                 <div onClick={handleCopy} className='truncate'>
                     <Tooltip content="Click to Copy">
-                        <a className='hover:text-gray-500' onClick={(e) => {e.preventDefault()}} href={window.location.href}>{window.location.href}</a>
+                        <a className='hover:text-gray-500' onClick={(e) => {e.preventDefault()}} href={window.location.href}>{cleanUrl}</a>
                     </Tooltip>
                 </div>
             }
@@ -77,7 +82,7 @@ const ChangeFileRoute = (props) => {
                             required={true}
                             placeholder={props.currentFile.fileRoute}
                             autoFocus
-                            addon={window.location.origin+"/"}
+                            addon={locationHost + "/"}
                         />
                         <Button disabled={props.Loading.routeChangeValue ? true : false} type="submit" size="xs">
                         {props.Loading.routeChangeValue

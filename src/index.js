@@ -7,10 +7,9 @@ import { Provider } from 'react-redux'
 import AppRouter from './routers/AppRouter';
 import './parse/parseConf'
 
-store.subscribe(()=> {
-  console.log(store.getState())
-})
-
+// store.subscribe(()=> {
+//   console.log(store.getState())
+// })
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

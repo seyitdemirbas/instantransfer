@@ -47,7 +47,7 @@ function MainPage() {
           dispatch(setUser(userInfo))
           setLoading(false);
         })
-        .catch(()=>{
+        .catch((err)=>{
             const error = {
                 type: "error",
                 msg: "Something went wrong."
@@ -91,11 +91,12 @@ function MainPage() {
   );
   
   return (
-    <div className="Main">
+    <div className="Main min-h-screen flex flex-col">
         <Header/>
-        <div className="container mx-auto p-3 min-h-screen">
+        <div className="container mx-auto p-3">
             <Outlet/>
         </div>
+        <div className='grow shrink-0 box-border'></div>
         <ToastContainerDiv />
         <FooterF/>
     </div>

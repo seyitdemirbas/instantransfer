@@ -23,7 +23,7 @@ const RecentFiles = () => {
   if(loading.recentFilesValue) {
     return (
         <IconContext.Provider value={{ color: "blue", className: "rotateIcon", size:"7em" }}>
-            <div className="flex h-screen">
+            <div className="flex justify-items-center items-center h-80">
                 <div className="m-auto">
                     <AiOutlineLoading3Quarters/>
                 </div>

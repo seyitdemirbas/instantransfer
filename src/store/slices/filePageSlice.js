@@ -90,7 +90,7 @@ export const downloadFileFromDatabase = createAsyncThunk("filepage/downloadFileF
   var query = new Parse.Query(object);
   const results = query.get(id)
   .then(async (resFile)=>{
-    console.log(resFile.get("file").url())
+    // console.log(resFile.get("file").url())
     const fileUrl = await resFile.get("file").url()
     const response = await fetch(fileUrl);
     const contentLength = response.headers.get('content-length');
