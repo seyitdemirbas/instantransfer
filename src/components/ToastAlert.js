@@ -19,9 +19,9 @@ export const ToastAlert = (type,text) => {
 
 const ToastContainerDiv = () => {
   return (
-    <div>
+    <React.Fragment>
         <ToastContainer/>
-    </div>
+    </React.Fragment>
   )
 }
 

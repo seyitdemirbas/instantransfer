@@ -10,22 +10,23 @@ import ButtonWithLoading from './ButtonWithLoading';
 
 const Register = () => {
     const dispatch = useDispatch()
-    // const navigate = useNavigate()
-    const inputRefEmail = useRef(null)
-    const inputRefUsername = useRef(null)
-    const inputRefPassword = useRef(null)
-    const inputRefPasswordRepeat = useRef(null)
     const recaptchaRef = useRef(null);
     const [loading, setloading] = useState(false);
-
 
     const handleSubmit = (e) => {
         e.preventDefault();
         setloading(true)
-        if(!inputRefEmail.current.value || !inputRefPassword.current.value || !inputRefPasswordRepeat.current.value ) {
+
+        const email = e.target['email'].value
+        const username = e.target['username'].value
+        const password = e.target['password'].value
+        const repeatPassword = e.target['repeat-password'].value
+
+
+        if(!email || !password || !repeatPassword || !username ) {
             setloading(false)
             dispatch(setAlert({type:"warning",msg:'Do not leave any blank space.'}))
-          }else if(!(inputRefPassword.current.value === inputRefPasswordRepeat.current.value)) {
+          }else if(!(password === repeatPassword)) {
             setloading(false)
             dispatch(setAlert({type:"warning",msg:'Passwords dont match.'}))
           }else if(!recaptchaRef.current.getValue()) {
@@ -34,9 +35,9 @@ const Register = () => {
           }else {
             const user = new Parse.User.current();
             const cpatchaValue = recaptchaRef.current.getValue();
-            user.set("username", inputRefUsername.current.value);
-            user.set("password", inputRefPassword.current.value);
-            user.set("email", inputRefEmail.current.value);
+            user.set("username", username);
+            user.set("password", password);
+            user.set("email", email);
             user.set("isAnon", false)
             user.set("cpatcha", cpatchaValue ? cpatchaValue : '00' )
             user.signUp()
@@ -44,17 +45,16 @@ const Register = () => {
                 setloading(false)
                 dispatch(setAlert({type:"success",msg:"Registration Successful. Welcome "+res.get("username")}))
                 dispatch(setUserTrigger())
-                // navigate("/", {replace : true})
             })
             .catch((err)=>{
                 setloading(false)
 
                 if(err.code === 202) {
-                    inputRefUsername.current.focus();
+                    e.target['username'].focus();
                 }
 
                 if(err.code === 203) {
-                    inputRefEmail.current.focus();
+                    e.target['email'].focus();
                 }
 
                 if(cpatchaValue){
@@ -73,17 +73,16 @@ const Register = () => {
             <div>
                 <div className="mb-2 block">
                 <Label
-                    htmlFor="email2"
+                    htmlFor="email"
                     value="Your email"
                 />
                 </div>
                 <TextInput
-                id="email2"
+                id="email"
                 type="email"
                 placeholder="name@mail.com"
                 required={true}
                 shadow={true}
-                ref={inputRefEmail}
                 />
             </div>
             <div>
@@ -98,22 +97,20 @@ const Register = () => {
                 type="username"
                 required={true}
                 shadow={true}
-                ref={inputRefUsername}
                 />
             </div>
             <div>
                 <div className="mb-2 block">
                 <Label
-                    htmlFor="password2"
+                    htmlFor="password"
                     value="Your password"
                 />
                 </div>
                 <TextInput
-                id="password2"
+                id="password"
                 type="password"
                 required={true}
                 shadow={true}
-                ref={inputRefPassword}
                 />
             </div>
             <div>
@@ -127,8 +124,7 @@ const Register = () => {
                 id="repeat-password"
                 type="password"
                 required={true}
-                shadow={true}
-                ref={inputRefPasswordRepeat}
+                shadow={true}   
                 />
             </div>
             <ReCpatcha recaptchaRef={recaptchaRef}/>

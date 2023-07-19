@@ -5,7 +5,6 @@ import { useDispatch,useSelector} from 'react-redux'
 import { changeUploadProgressValue } from "../store/slices/generalSlice";
 import {useComponentDidMount} from "./useComponentDidMount"
 import { useNavigate } from 'react-router';
-// import Parse from 'parse';
 import ButtonWithLoading from './ButtonWithLoading';
 import ReCpatcha from './ReCpatcha';
 

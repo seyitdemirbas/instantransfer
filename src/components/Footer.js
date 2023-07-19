@@ -8,7 +8,7 @@ function FooterF() {
   const GithubHref = Parse.Config.current().get('GithubLink')
 
   return (
-    <Footer container={true}>
+    <Footer className='shadow-none' container={true}>
         <div className="w-full">
             <Footer.Divider />
             <div className="w-full sm:flex sm:items-center sm:justify-between">

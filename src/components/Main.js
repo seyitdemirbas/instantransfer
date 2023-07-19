@@ -1,11 +1,9 @@
 import '../App.css';
-// import { useSelector, useDispatch } from 'react-redux'
 import { Outlet} from 'react-router-dom'
 import Header from './Header';
 import FooterF from './Footer';
 import Parse from 'parse';
 import React, {useEffect,useState} from 'react';
-// import { ToastContainer } from 'react-toastify';
 import {useComponentDidMount} from "./useComponentDidMount"
 import ToastContainerDiv,{ToastAlert} from './ToastAlert';
 import { useDispatch, useSelector } from 'react-redux';

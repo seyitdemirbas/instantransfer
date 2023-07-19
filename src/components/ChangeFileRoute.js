@@ -11,6 +11,7 @@ import { setAlert } from '../store/slices/generalSlice';
 
 const ChangeFileRoute = (props) => {
     const [isShown, setIsShown] = useState(false);
+    const [newRouteName, setNewRouteName] = useState(""); // useState hook
     const dispatch = useDispatch()
     const isComponentMounted = useComponentDidMount()
     const navigate = useNavigate()
@@ -28,6 +29,12 @@ const ChangeFileRoute = (props) => {
       // setIsShown(true);
     };
 
+    const handleChange = (e) => {
+        e.preventDefault(); // prevent the default action
+        const LowerCasedRoute = e.target.value.toLowerCase()
+        setNewRouteName(LowerCasedRoute); // set name to e.target.value (event)
+    };
+    
     const handleSubmit = (e) => {
         e.preventDefault()
         const params =  { currentRouteName: props.currentFile.fileRoute, newRouteName: e.target[0].value };
@@ -83,6 +90,8 @@ const ChangeFileRoute = (props) => {
                             placeholder={props.currentFile.fileRoute}
                             autoFocus
                             addon={locationHost + "/"}
+                            onChange={handleChange}
+                            value={newRouteName}
                         />
                         <Button disabled={props.Loading.routeChangeValue ? true : false} type="submit" size="xs">
                         {props.Loading.routeChangeValue

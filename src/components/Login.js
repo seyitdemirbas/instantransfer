@@ -1,7 +1,6 @@
 import React,{useRef, useState} from 'react'
 import { Label, TextInput } from 'flowbite-react'
 import { useDispatch } from 'react-redux'
-// import { useNavigate } from 'react-router'
 import { setAlert } from '../store/slices/generalSlice'
 import { setUserTrigger } from '../store/slices/generalSlice';
 import Parse from 'parse'
@@ -31,7 +30,6 @@ const Login = () => {
                 dispatch(resetRecentFileList())
                 dispatch(setIsRendered(false))
                 dispatch(setUserTrigger())
-                // navigate("/", {replace : true})
             })
             .catch((err)=>{
                 setloading(false)
