@@ -11,6 +11,7 @@ import PublicRoutes from "../components/PublicRoutes"
 import Settings from "../components/Settings"
 import ForgotPassword from "../components/ForgotPassword"
 import ContactUs from "../components/ContactUs"
+import NotFound from "../components/NotFound"
 
 
 
@@ -19,6 +20,7 @@ const AppRouter = () => {
       <BrowserRouter>
           <Routes>
               <Route path="/" element={<MainPage/>}>
+              <Route path="*" element={<NotFound title='404'/>} />
                   <Route path="/" element={<HomePage/>}></Route>
                   <Route path=":RouterName" element={<FilePage/>}></Route>
                   <Route path="static/about" element={<About/>}></Route>

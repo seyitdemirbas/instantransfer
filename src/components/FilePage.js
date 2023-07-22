@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 import { useDispatch,useSelector } from 'react-redux';
-import { Link, useParams} from 'react-router-dom'
+import { useParams} from 'react-router-dom'
 import { returnFile } from '../store/slices/filePageSlice';
 import { AiOutlineLoading3Quarters} from 'react-icons/ai';
 import { IconContext } from "react-icons";
-import { Card, Button, Progress} from 'flowbite-react'
+import { Card, Progress} from 'flowbite-react'
 import GetMimeToIcon from './GetMimeToIcon';
 import { formatBytes, getRemainingTime} from './generalFunctions';
 import { getCurrentTime } from '../store/slices/generalSlice';  
@@ -12,6 +12,7 @@ import ChangeFileRoute from './ChangeFileRoute';
 import { FilePageDownload } from './FilePageDownload';
 import {FilePageDelete} from './FilePageDelete';
 import Parse from 'parse';
+import NotFound from './NotFound';
 
 
 function FilePage(props) {
@@ -79,16 +80,7 @@ function FilePage(props) {
             )
         }else{
             return(
-                <section className="flex items-center h-full sm:p-16 dark:bg-gray-900 dark:text-gray-100">
-                <div className="container flex flex-col items-center justify-center px-5 mx-auto my-8 space-y-8 text-center sm:max-w-md">
-                    <p className="text-3xl">Looks like there is no file in this route.</p>
-                    <Link to="/">
-                        <Button gradientMonochrome="teal">
-                            Back to Home
-                        </Button>
-                    </Link>
-                </div>
-            </section>
+                <NotFound title='Looks like there is no file in this route.' />
             )
         }
     }else{

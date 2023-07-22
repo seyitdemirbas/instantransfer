@@ -60,11 +60,9 @@ export const config = {
         subject: "Password recovery",
         body: "Custome pasword recovery email body",
         btn: "Recover your password",
-        /* --EXTRA PARAMETERS--
-          others: {
-            extraParameter
-          }
-          */
+        others: {
+          clientUrl: process.env.CLIENT_URL
+        }
       },
       confirmOptions: {
         subject: "E-mail confirmation",
@@ -125,6 +123,7 @@ app.get('/', function (req, res) {
 app.get('/test', function (req, res) {
   res.sendFile(path.join(__dirname, '/public/test.html'));
 });
+
 
 if (!process.env.TESTING) {
   const port = process.env.PORT || 1337;

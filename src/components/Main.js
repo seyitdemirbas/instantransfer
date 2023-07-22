@@ -32,9 +32,11 @@ function MainPage() {
 
     const fetchUser = async () => {
 
-      await Parse.Config.get()
+      const errCode = await Parse.Config.get()
+      .then(res=>{return null})
+      .catch(err=>{return err.code})
 
-      if(!currentUser) {
+      if(!currentUser || errCode === 209) {
         await Parse.AnonymousUtils.logIn()
         .then((res)=>{
           res.set("isAnon", true)
@@ -68,7 +70,6 @@ function MainPage() {
         }
         dispatch(setUser(userInfo))
         setLoading(false);
-        console.log(currentUser)
       }
     }
 
