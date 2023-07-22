@@ -2,17 +2,18 @@ import React,{useState} from 'react'
 import { Button, Modal,Spinner } from 'flowbite-react'
 import { useDispatch } from 'react-redux'
 import { deleteFileFromDatabase } from '../store/slices/filePageSlice'
+import { useNavigate } from 'react-router'
 
 export const FilePageDelete = (props) => {
 const [modalState, setModalState] = useState(false)
 const dispatch = useDispatch()
+const navigate = useNavigate()
 
 const handleClick = () => {
     const params = {routeName : props.fileRoute}
+    setModalState(false)
     dispatch(deleteFileFromDatabase(params))
-    .then(()=>{
-        setModalState(false)
-    })
+    .then(()=>navigate('/static/recentfiles', {replace:true}))
 }
 
   return (
