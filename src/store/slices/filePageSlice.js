@@ -97,7 +97,7 @@ export const downloadFileFromDatabase = createAsyncThunk("filepage/downloadFileF
     const total = parseInt(contentLength, 10);
     let loaded = 0;
 
-    const res = new Response(new ReadableStream({
+    const resBlob = new Response(new ReadableStream({
       async start(controller) {
         const reader = response.body.getReader();
         for (;;) {
@@ -111,13 +111,13 @@ export const downloadFileFromDatabase = createAsyncThunk("filepage/downloadFileF
       },
     }));
 
-    const data = await res.blob();
+    const data = await resBlob.blob();
     return data
   })
   .catch((err)=>{
       const error = {
         type: "error",
-        msg: err.message
+        msg: "Download Failed : Some error occured."
       }
       return rejectWithValue(error)
   })

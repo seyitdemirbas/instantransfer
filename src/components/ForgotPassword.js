@@ -1,4 +1,4 @@
-import React,{useRef,useState} from 'react'
+import React,{useState} from 'react'
 import { Label, TextInput } from 'flowbite-react';
 import { HiMail } from 'react-icons/hi';
 import Parse from 'parse';
@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router';
 
 
 function ForgotPassword() {
-    const emailRef = useRef(null);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
@@ -49,7 +48,6 @@ function ForgotPassword() {
                     placeholder="name@mail.com"
                     required
                     type="email"
-                    ref={emailRef}
                     />
                 </div>
                 <ButtonWithLoading loadingState={loading} buttonName='Send Password Reset Email'/>

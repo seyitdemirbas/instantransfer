@@ -1,6 +1,6 @@
 import { createSlice,createAsyncThunk} from '@reduxjs/toolkit'
 import { addFileToDatabase } from './myFilesSlice';
-import { changeFileRouteNameDB, returnFile,deleteFileFromDatabase } from './filePageSlice';
+import { changeFileRouteNameDB, returnFile,deleteFileFromDatabase,downloadFileFromDatabase } from './filePageSlice';
 import Parse from 'parse';
 
 export const getCurrentTime = createAsyncThunk("genral/getCurrentTime", async (req, {rejectWithValue}) => {
@@ -90,6 +90,9 @@ export const generalSlice = createSlice({
         state.alert = action.payload
       },
       [deleteFileFromDatabase.fulfilled]: (state, action) => {
+        state.alert = action.payload
+      },
+      [downloadFileFromDatabase.rejected]: (state, action) => {
         state.alert = action.payload
       }
   }

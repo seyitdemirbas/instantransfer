@@ -9,11 +9,13 @@ const [modalState, setModalState] = useState(false)
 const dispatch = useDispatch()
 const navigate = useNavigate()
 
-const handleClick = () => {
+const handleClick = async () => {
     const params = {routeName : props.fileRoute}
     setModalState(false)
-    dispatch(deleteFileFromDatabase(params))
-    .then(()=>navigate('/static/recentfiles', {replace:true}))
+    const resultAction = await dispatch(deleteFileFromDatabase(params))
+    if(deleteFileFromDatabase.fulfilled.match(resultAction)) {
+        navigate('/static/recentfiles', {replace:true})
+    }
 }
 
   return (
@@ -21,7 +23,7 @@ const handleClick = () => {
         <Button gradientMonochrome="failure" disabled={props.Loading.deleteFileValue ? true : false} onClick={()=>setModalState(true)}>
             {props.Loading.deleteFileValue
             ?
-            <div className="mr-3">
+            <div>
                 <Spinner
                 size="sm"
                 light={true}

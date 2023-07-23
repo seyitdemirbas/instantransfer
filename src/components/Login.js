@@ -1,4 +1,4 @@
-import React,{useRef, useState} from 'react'
+import React,{useState} from 'react'
 import { Label, TextInput } from 'flowbite-react'
 import { useDispatch } from 'react-redux'
 import { setAlert } from '../store/slices/generalSlice'
@@ -10,20 +10,19 @@ import ButtonWithLoading from './ButtonWithLoading';
 
 const Login = () => {
     const dispatch = useDispatch()
-    // const navigate = useNavigate()
-    const inputRefEmail = useRef(null)
-    const inputRefPassword = useRef(null)
     const [loading, setloading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setloading(true)
+        const email = e.target['emailOrUsername'].value
+        const password = e.target['password1'].value
 
-        if(!inputRefEmail.current.value || !inputRefPassword.current.value) {
+        if(!email || !password) {
             setloading(false)
             dispatch(setAlert({type:"warning",msg:'Do not leave any blank space.'}))
           }else {
-            Parse.User.logIn(inputRefEmail.current.value,inputRefPassword.current.value)
+            Parse.User.logIn(email,password)
             .then((res)=>{
                 setloading(false)
                 dispatch(setAlert({type:"success",msg:"Login Successful. Welcome "+res.get("username")}))
@@ -33,7 +32,7 @@ const Login = () => {
             })
             .catch((err)=>{
                 setloading(false)
-                inputRefPassword.current.focus()
+                e.target['password1'].focus()
                 dispatch(setAlert({type:"error",msg:err.message}))
             })
         }
@@ -54,7 +53,6 @@ const Login = () => {
                 id="emailOrUsername"
                 placeholder="name@mail.com"
                 required={true}
-                ref={inputRefEmail}
                 />
             </div>
             <div>
@@ -68,7 +66,6 @@ const Login = () => {
                 id="password1"
                 type="password"
                 required={true}
-                ref={inputRefPassword}
                 />
             </div>
             {/* <div className="flex items-center gap-2">
