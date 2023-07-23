@@ -95,9 +95,6 @@ const Settings = () => {
           ref={inputRefPasswordRepeat}
         />
       </div>
-      {/* <Button gradientMonochrome="teal" type="submit">
-        Change Password
-      </Button> */}
       <ButtonWithLoading loadingState={loading} buttonName='Change Password'/>
     </form>
   </React.Fragment>
