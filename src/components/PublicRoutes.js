@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 const PublicRoutes = () => {
     const isAnon = useSelector((state) => state.general.user.info.isAnon)
     return (
-        !! isAnon ? <Outlet/> : <Navigate to="/" replace={true}/>
+        !! isAnon ? <Outlet/> : <Navigate to={-1} replace={true}/>
     )
 }
 

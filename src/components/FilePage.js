@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useEffect} from 'react'
 import { useDispatch,useSelector } from 'react-redux';
 import { useParams} from 'react-router-dom'
-import { returnFile } from '../store/slices/filePageSlice';
+import { returnFile, toggleIsPrivate } from '../store/slices/filePageSlice';
 import { AiOutlineLoading3Quarters} from 'react-icons/ai';
 import { IconContext } from "react-icons";
 import { Card, Progress} from 'flowbite-react'
@@ -10,16 +10,17 @@ import { formatBytes, getRemainingTime} from './generalFunctions';
 import { getCurrentTime } from '../store/slices/generalSlice';  
 import ChangeFileRoute from './ChangeFileRoute';
 import { FilePageDownload } from './FilePageDownload';
-import {FilePageDelete} from './FilePageDelete';
+import { FilePageDelete } from './FilePageDelete';
 import Parse from 'parse';
 import NotFound from './NotFound';
-
+import PrivateToggle from './PrivateToggle';
 
 function FilePage(props) {
     const { RouterName } = useParams();
     const dispatch = useDispatch();
     const Loading = useSelector((state) => state.filePage.loading)
     const currentFile = useSelector((state) => state.filePage.currentFile)
+    const isAnon = useSelector((state) => state.general.user.info.isAnon)
     const currentTime = useSelector((state) => state.general.time.currentTime)
     const navigationState = useSelector((state) => state.filePage.navigation.routeChangeDone.route)
     const progressValue = useSelector((state) => state.general.progress.downloadValue)
@@ -37,47 +38,56 @@ function FilePage(props) {
     }, [])
     if (!Loading.value) {
         if(!(Object.keys(currentFile).length === 0)) {
-            return (
-                <React.Fragment>
-                <Card>
-                    <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                        <div className='flex'>
-                        <div>
-                            <IconContext.Provider value={{ size:"1.3em", color: "#9ca3af", className: "mr-2" }}>
-                                <GetMimeToIcon mimeType={currentFile.fileType}/>
-                            </IconContext.Provider>
+            if(currentFile.createdBy) {
+                return (
+                    <React.Fragment>
+                    <Card>
+                        <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                            <div className='flex'>
+                            <div>
+                                <IconContext.Provider value={{ size:"1.3em", color: "#9ca3af", className: "mr-2" }}>
+                                    <GetMimeToIcon mimeType={currentFile.fileType}/>
+                                </IconContext.Provider>
+                            </div>
+                            <span className='truncate'>{currentFile.fileName}</span>
+                            </div>
+                        </h5>
+                        <ChangeFileRoute currentFile={currentFile} Loading={Loading} navigation={navigationState}/>
+                        <p className="font-normal text-gray-700 dark:text-gray-400">
+                            <span className='font-bold'>File Size:</span> {formatBytes(currentFile.fileSize)}
+                        </p>
+                        <p className="font-normal text-gray-700 dark:text-gray-400">
+                            <span className='font-bold'>Expires At:</span> {currentFile.expiresAt && getRemainingTime(currentFile.expiresAt,currentTime)}
+                        </p>
+                        {currentFile.createdBy === Parse.User.current().id &&
+                            <PrivateToggle isPrivate={currentFile.isPrivate} setIsPrivate={toggleIsPrivate} stateType='redux' fileId={currentFile.id}/>
+                        }
+                        {Object.keys(currentFile).length > 0 &&
+                            <FilePageDownload currentFile={currentFile} Loading={Loading}/>
+                        }
+                        {progressValue > 0 && Loading.downloadFileValue &&
+                            <Progress
+                            labelProgress
+                            labelText
+                            progress={progressValue}
+                            progressLabelPosition="outside"
+                            textLabel="Downloading..."
+                            textLabelPosition="outside"
+                            />
+                        }
+                    </Card>
+                    {currentFile.createdBy === Parse.User.current().id &&
+                        <div className='mt-2 inline-block float-right'>
+                            <FilePageDelete fileRoute={currentFile.fileRoute} Loading={Loading}/>
                         </div>
-                        <span className='truncate'>{currentFile.fileName}</span>
-                        </div>
-                    </h5>
-                    <ChangeFileRoute currentFile={currentFile} Loading={Loading} navigation={navigationState}/>
-                    <p className="font-normal text-gray-700 dark:text-gray-400">
-                        <span className='font-bold'>File Size:</span> {formatBytes(currentFile.fileSize)}
-                    </p>
-                    <p className="font-normal text-gray-700 dark:text-gray-400">
-                        <span className='font-bold'>Expires At:</span> {currentFile.expiresAt && getRemainingTime(currentFile.expiresAt,currentTime)}
-                    </p>
-                    {Object.keys(currentFile).length > 0 &&
-                        <FilePageDownload currentFile={currentFile} Loading={Loading}/>
                     }
-                    {progressValue > 0 && Loading.downloadFileValue &&
-                        <Progress
-                        labelProgress
-                        labelText
-                        progress={progressValue}
-                        progressLabelPosition="outside"
-                        textLabel="Downloading..."
-                        textLabelPosition="outside"
-                        />
-                    }
-                </Card>
-                {currentFile.createdBy === Parse.User.current().id &&
-                    <div className='mt-2 inline-block float-right'>
-                        <FilePageDelete fileRoute={currentFile.fileRoute} Loading={Loading}/>
-                    </div>
-                }
-                </React.Fragment>
-            )
+                    </React.Fragment>
+                )
+            }else{
+                return(
+                    <NotFound title='This file is Private.' login isAnon={isAnon}/>
+                )
+            }
         }else{
             return(
                 <NotFound title='Looks like there is no file in this route.' />

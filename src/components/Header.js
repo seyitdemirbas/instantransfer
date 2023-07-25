@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Navbar,Dropdown,Avatar, Toast } from 'flowbite-react';
+import { Navbar,Dropdown,Avatar, Toast, Spinner } from 'flowbite-react';
 import { IconContext } from "react-icons";
 import { HiExclamation } from 'react-icons/hi';
 import { NavLink, Link} from 'react-router-dom'
@@ -8,6 +8,7 @@ import { useSelector,useDispatch } from 'react-redux';
 import { setAlert, setUserTrigger } from '../store/slices/generalSlice';
 import Parse from 'parse';
 import { resetRecentFileList } from '../store/slices/myFilesSlice';
+import { resetCurrentFileWi } from '../store/slices/filePageSlice';
 
 
 function Header() {
@@ -15,10 +16,9 @@ function Header() {
     const isAnon = useSelector((state) => state.general.user.info.isAnon)
     const [isShown, setIsShown] = useState(false)
     const [isFetch, setIsFetch] = useState(false)
+    const [isLoadingSpinner, setIsLoadingSpinner] = useState(false)
     const isVerified = isFetch ? (Parse.User.current() ? Parse.User.current().get('emailVerified') : true) : true
     const dispatch = useDispatch()
-
-    // console.log(Parse.User.currentAsync() && Parse.User.currentAsync().get('emailVerified'))
 
     useEffect(() => {
         const fetchCurrentUserDB = async () =>{
@@ -40,6 +40,7 @@ function Header() {
         Parse.User.logOut()
         .then((res)=>{
             dispatch(resetRecentFileList())
+            dispatch(resetCurrentFileWi())
             dispatch(setUserTrigger())
         })
         .catch(()=>{
@@ -53,10 +54,12 @@ function Header() {
 
     const handleVerifyRequest = async (e) => {
         e.preventDefault();
+        setIsLoadingSpinner(true)
         const email = Parse.User.current().get('email')
         await Parse.User.requestEmailVerification(email)
         .then((res)=>{
             setIsShown(false)
+            setIsLoadingSpinner(false)
             const error = {
                 type: "success",
                 msg: "Email verification request sended."
@@ -64,6 +67,7 @@ function Header() {
             dispatch(setAlert(error))
         })
         .catch((err)=>{
+            setIsLoadingSpinner(false)
             const error = {
                 type: "error",
                 msg: err.message
@@ -82,7 +86,14 @@ function Header() {
                     </IconContext.Provider>
                 </div>
                 <div className="text-black ml-3 text-sm font-normal">
-                    Your email address is not verified. Please check your email adress: <span className='font-bold'>{userInfoState.email}</span>. If you have not received a verification email, <span className='font-bold cursor-pointer hover:text-[#1f2937]' onClick={handleVerifyRequest}>click here for resend</span>.
+                    Your email address is not verified. Please check your email adress: <span className='font-bold'>{userInfoState.email}</span>. If you have not received a verification email, <button disabled={isLoadingSpinner && true} className='font-bold hover:text-[#1f2937] hover:underline' onClick={handleVerifyRequest}>click here for resend</button>
+                    {isLoadingSpinner &&
+                        <Spinner
+                        className='ml-2 mb-1'
+                        size="xs"
+                        light={true}
+                        />
+                    }
                 </div>
                 <Toast.Toggle />
             </Toast>

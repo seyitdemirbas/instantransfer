@@ -10,23 +10,34 @@ export const returnFile = createAsyncThunk("filepage/returnFile", async (req, {r
   query.include("fileObjectRelation");
   const results = await query.find().then((res)=>{
       if(!(res.length === 0)){
-            const data = {
-              id : res[0].get("fileObjectRelation").id,
-              fileName: res[0].get("fileObjectRelation").get("fileName"),
-              fileSize: res[0].get("fileObjectRelation").get("fileSize"),
-              fileType: res[0].get("fileObjectRelation").get("fileTypeMime"),
-              fileRoute: res[0].get("routeName"), 
-              createdAt: res[0].get("fileObjectRelation").get("createdAt").toJSON(),
-              expiresAt: res[0].get("fileObjectRelation").get("expiresAt").toJSON(),
-              createdBy: res[0].get("fileObjectRelation").get("createdBy").id
-            }
-            return data;
+        const createdBy = res[0].get("fileObjectRelation").get("createdBy").id
+        const publicStatus = res[0].get("fileObjectRelation").get("publicStatus")
+        if((publicStatus === false && createdBy === Parse.User.current().id) || publicStatus === true) {
+          const data = {
+            id : res[0].get("fileObjectRelation").id,
+            fileName: res[0].get("fileObjectRelation").get("fileName"),
+            fileSize: res[0].get("fileObjectRelation").get("fileSize"),
+            fileType: res[0].get("fileObjectRelation").get("fileTypeMime"),
+            fileRoute: res[0].get("routeName"), 
+            createdAt: res[0].get("fileObjectRelation").get("createdAt").toJSON(),
+            expiresAt: res[0].get("fileObjectRelation").get("expiresAt").toJSON(),
+            createdBy: res[0].get("fileObjectRelation").get("createdBy").id,
+            isPrivate: !res[0].get("fileObjectRelation").get("publicStatus")
+          }
+          return data;
+        }else{
+          const data = {
+            isPrivate: !res[0].get("fileObjectRelation").get("publicStatus")
+          }
+          return data;
+        }
     }else{
-      const error = {
-          type: "error",
-          msg: "There is no such file this route."
-      }
-      return rejectWithValue(error)
+      // const error = {
+      //     type: "error",
+      //     msg: "There is no such file this route."
+      // }
+      // return rejectWithValue()
+      return {}
     }
   }).catch((err)=>{
     // console.log(err)
@@ -154,6 +165,17 @@ export const filePageSlice = createSlice({
     },
     resetCurrentFile:(state,action)=>{
       state.currentFile = {}
+    },
+    resetCurrentFileWi:(state,action)=>{
+        if(state.currentFile.isPrivate === true){
+        return {
+          ...state,
+          currentFile : {isPrivate : state.currentFile.isPrivate}
+        }
+      }
+    },
+    toggleIsPrivate:(state,action)=>{
+      state.currentFile.isPrivate = !state.currentFile.isPrivate
     }
   },
   extraReducers: {
@@ -202,7 +224,7 @@ export const filePageSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { changeLoadingValue,resetCurrentFile } = filePageSlice.actions
+export const { changeLoadingValue,resetCurrentFile,toggleIsPrivate,resetCurrentFileWi } = filePageSlice.actions
 
 export default filePageSlice.reducer
 

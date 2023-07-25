@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react'
+import React, {useEffect, useRef,useState} from 'react'
 import { Label, FileInput, Progress} from 'flowbite-react';
 import { addFileToDatabase } from '../store/slices/myFilesSlice';
 import { useDispatch,useSelector} from 'react-redux'
@@ -7,8 +7,9 @@ import {useComponentDidMount} from "./useComponentDidMount"
 import { useNavigate } from 'react-router';
 import ButtonWithLoading from './ButtonWithLoading';
 import ReCpatcha from './ReCpatcha';
+import PrivateToggle from './PrivateToggle';
 
-function Upload() {
+function Upload(props) {
 const inputRef = useRef(null)
 const dispatch = useDispatch()
 const progressValue = useSelector((state) => state.general.progress.uploadValue)
@@ -17,6 +18,7 @@ const uploadDoneNavigationRoute = useSelector((state) => state.myFiles.navigatio
 const isComponentMounted = useComponentDidMount();
 const navigate = useNavigate()
 const recaptchaRef = useRef(null);
+const [isPrivate, setIsPrivate]= useState(false)
 
 
 useEffect(() => {
@@ -33,7 +35,8 @@ const handleSubmit = (e) => {
     // dispatch(changeProgressValue(0))
     const inputRefs = {
       cpatchaValue : recaptchaRef.current.getValue(),
-      fileRef : inputRef
+      fileRef : inputRef,
+      isPrivate : isPrivate
     }
     dispatch(addFileToDatabase(inputRefs))
 }
@@ -55,6 +58,7 @@ const handleSubmit = (e) => {
           ref={inputRef}
           />
       </div>
+          <PrivateToggle isPrivate={isPrivate} setIsPrivate={setIsPrivate} />
           <ReCpatcha recaptchaRef={recaptchaRef}/>
           <ButtonWithLoading loadingState={submitLoading} buttonName='Submit'/>
       </form>

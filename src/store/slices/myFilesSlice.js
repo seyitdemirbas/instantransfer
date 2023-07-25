@@ -5,6 +5,7 @@ import { changeUploadProgressValue } from "./generalSlice";
 
 export const addFileToDatabase = createAsyncThunk("myfiles/addFileToDatabase", async (req, {rejectWithValue,dispatch}) => {
     const file = req.fileRef.current.files[0]
+    const isPrivate = !req.isPrivate
 
     if(!file) {
         const error = {
@@ -74,6 +75,7 @@ export const addFileToDatabase = createAsyncThunk("myfiles/addFileToDatabase", a
             }
             res[0].set("fileName", originalfileName)
             res[0].set("fileNameWithoutExt", removeExtension(originalfileName))
+            res[0].set("publicStatus", isPrivate)
             res[0].save();
             const data = {
                 id : res[0].id,
@@ -83,6 +85,7 @@ export const addFileToDatabase = createAsyncThunk("myfiles/addFileToDatabase", a
                 filesize: res[0].get("fileSize"),
                 expiresat: res[0].get("expiresAt").toJSON(),
                 addeddate: res[0].get("createdAt").toJSON(),
+                isPrivate: res[0].get("publicStatus")
             }
             return data;
         })
@@ -120,6 +123,7 @@ export const getFilesFromDatabase = createAsyncThunk("myfiles/getFilesFromDataba
                 filesize: item.get("fileObjectRelation").get("fileSize"),
                 expiresat: item.get("fileObjectRelation").get("expiresAt").toJSON(),
                 addeddate: item.get("fileObjectRelation").get("createdAt").toJSON(),
+                isPrivate: item.get("fileObjectRelation").get("publicStatus")
             }
             
             files.push(file)
