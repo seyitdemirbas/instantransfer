@@ -11,7 +11,7 @@ function About() {
       </Accordion.Title>
       <Accordion.Content>
         <p className="mb-2 text-gray-800 dark:text-gray-400">
-        Transfer your file over the web between devices in seconds. Upload your file to any membership, no strings attached, and get a link that can be written quickly!
+        Transfer your file over the web between devices in seconds. Upload your file to any membership with no strings attached and get a link that can be written and remembered quickly!
         </p>
       </Accordion.Content>
     </Accordion.Panel>

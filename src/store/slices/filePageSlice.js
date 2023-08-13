@@ -83,7 +83,8 @@ export const deleteFileFromDatabase = createAsyncThunk("filepage/deleteFileFromD
       }
       dispatch(resetCurrentFile())
       dispatch(removeFile(params.routeName))
-      return data
+      
+      return (params.isMultiple ? '' : data)
   })
   .catch((err)=>{
       const error = {
