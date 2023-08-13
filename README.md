@@ -1,18 +1,18 @@
 # Instant Transfer Project
 
-In this project, a file upload and download infrastructure has been prepared to quickly share rememberable file links over the web. Example site: [Fileil](https://fileil.com)
+In this project, a file upload and download infrastructure has been prepared to quickly share rememberable file links over the web. Example site: [Fileil.com](https://fileil.com)
 
 [React](https://github.com/facebook/react) was used for the Front-End and [Parse Server](https://github.com/parse-community/parse-server/) was used for the Back-End.
 
 ## Requirements
+
 Use the package manager [npm](https://www.npmjs.com/package/npm)
 
 [Node.js v18.x](https://www.npmjs.com/package/npm)
 
-MongoDB 5 or 6
+[MongoDB 5 or 6](https://www.mongodb.com/try/download/community)
 
 Google Recaptcha v2
-
 
 ## Installation
 
@@ -26,6 +26,7 @@ REACT_APP_PARSE_CONFIG_JAVASCRIPT_KEY = '123456'
 ```
 
 Create .env file to **parse-server-node-js**  folder. Add below code and edit the parameters in a necessary way.
+
 ```bash
 #.env file
 #GENERAL OPTIONS
@@ -57,6 +58,7 @@ PARSEDASHBOARD_PASSWORD = 'password'
 ```
 
 Go to **parse-server-node-js** folder
+
 ```bash
 npm install
 npm run start
@@ -66,14 +68,16 @@ Go to [http://localhost:1337/dashboard](http://localhost:1337/dashboard)
 
 Login the panel and go to **Dashboard > Config**
 
-
 Add parameters like below;
+
+![plot](./readme-files/readme.jpg)
 
 **CpatchaSiteKey** : Your Google Recaptcha Site key
 
 **SiteName** : Your Site Name
 
 Go to **main** folder
+
 ```bash
 npm install
 npm run start
@@ -83,7 +87,8 @@ New version of parse server disabled except some extensions all file extensions 
 
 Go to **parse-server-node-js>node_modules>parse-serverlib>Routers>FilesRouter.js**
 
-**Comment** Line 147 to 150 Like Below;
+**Comment** line 147 to 150 like below;
+
 ```javascript
 // if (!isValidExtension(extension)) {
 //   next(new _node.default.Error(_node.default.Error.FILE_SAVE_ERROR, `File upload of extension ${extension} is disabled.`));
@@ -94,13 +99,29 @@ Go to **parse-server-node-js>node_modules>parse-serverlib>Routers>FilesRouter.js
 ## Usage
 
 Go to **parse-server-node-js** folder and start the Parse Server
+
 ```bash
 npm run start
 ```
 
 Go to main folder and start the React Front-End
+
 ```bash
 npm run start
+```
+
+## Configuration
+
+On forgot your password page normally entering wrong email does not result errors. if you want to display error's, you can comment the code like below.
+
+Go to **parse-server-node-js>node_modules>parse-serverlib>Routers>UserRouter.js**
+
+**Comment** line 377 to 379 like below;
+
+```javascript
+// return {
+//   response: {}
+// };
 ```
 
 ## Contributing
