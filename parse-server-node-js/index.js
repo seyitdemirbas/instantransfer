@@ -5,6 +5,7 @@
 import express from 'express';
 import http from 'http';
 import ParseDashboard from 'parse-dashboard';
+import compression from 'compression';
 import { ParseServer } from 'parse-server';
 import path from 'path';
 import 'dotenv/config'
@@ -14,14 +15,15 @@ const __dirname = path.resolve();
 export const config = {
   databaseURI:
     process.env.DATABASE_URI || process.env.MONGODB_URI ,
-  cloud: process.env.CLOUD_CODE_MAIN || __dirname + '/cloud/main.cjs',
+  cloud: process.env.CLOUD_CODE_MAIN || __dirname + '/cloud/main.js',
   appId: process.env.APP_ID ,
   appName: process.env.APP_NAME,
   masterKey: process.env.MASTER_KEY, //Add your master key here. Keep it secret!
   javascriptKey: process.env.JAVASCRIPT_KEY ,
+  maxUploadSize: "25mb",
   serverURL: process.env.SERVER_URL , // Don't forget to change to https if needed
   publicServerURL: process.env.PUBLIC_SERVER_URL,
-  allowClientClassCreation: false,
+  allowClientClassCreation: true,
   liveQuery: {
     classNames: ['Posts', 'Comments'], // List of classes to support for query subscriptions
   },
@@ -31,7 +33,7 @@ export const config = {
   },
   enableAnonymousUsers: true,
   rateLimit: {
-    requestPath: '/functions/changeFileRouteName|/login|/requestPasswordReset',
+    requestPath: '/functions/changeFileRouteName|/login|/requestPasswordReset|/verificationEmailRequest',
     requestTimeWindow: 5 * 60 * 1000,
     requestCount: 10,
     // includeInternalRequests: true,
@@ -100,6 +102,7 @@ const dashboard = new ParseDashboard({
 
 export const app = express();
 
+app.use(compression());
 // Serve static assets from the /public folder
 app.use('/public', express.static(path.join(__dirname, '/public')));
 
@@ -120,9 +123,9 @@ app.get('/', function (req, res) {
 
 // There will be a test page available on the /test path of your server url
 // Remove this before launching your app
-app.get('/test', function (req, res) {
-  res.sendFile(path.join(__dirname, '/public/test.html'));
-});
+// app.get('/test', function (req, res) {
+//   res.sendFile(path.join(__dirname, '/public/test.html'));
+// });
 
 
 if (!process.env.TESTING) {

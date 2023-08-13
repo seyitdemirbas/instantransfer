@@ -1,70 +1,113 @@
-# Getting Started with Create React App
+# Instant Transfer Project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+In this project, a file upload and download infrastructure has been prepared to quickly share rememberable file links over the web. Example site: [Fileil](https://fileil.com)
 
-## Available Scripts
+[React](https://github.com/facebook/react) was used for the Front-End and [Parse Server](https://github.com/parse-community/parse-server/) was used for the Back-End.
 
-In the project directory, you can run:
+## Requirements
+Use the package manager [npm](https://www.npmjs.com/package/npm)
 
-### `npm start`
+[Node.js v18.x](https://www.npmjs.com/package/npm)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+MongoDB 5 or 6
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Google Recaptcha v2
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Installation
 
-### `npm run build`
+Create .env file main folder. Add below code and edit the parameters in a necessary way.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+#.env file
+REACT_APP_PARSE_CONFIG_SERVER_URL = 'http://localhost:1337/parse'
+REACT_APP_PARSE_CONFIG_APP_ID = '123456'
+REACT_APP_PARSE_CONFIG_JAVASCRIPT_KEY = '123456'
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Create .env file to **parse-server-node-js**  folder. Add below code and edit the parameters in a necessary way.
+```bash
+#.env file
+#GENERAL OPTIONS
+MONGODB_URI = 'mongodb://localhost:27017/dev'
+APP_ID = '123456'
+APP_NAME = 'Your App Name'
+MASTER_KEY = '123456'
+JAVASCRIPT_KEY = '123456'
+SERVER_URL = 'http://localhost:1337/parse'
+PUBLIC_SERVER_URL = 'http://localhost:1337/parse'
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#YOUR DOMAİN OF CLİENT SİDE URL
+CLIENT_URL = 'http://localhost'
 
-### `npm run eject`
+#SMTP
+SMTP_HOST = 'smtp.youremail.com'
+SMTP_USERNAME = 'youremail@youremail.com'
+SMTP_PASSWORD = 'yoursmtppassword'
+SMTP_FROM_ADRESS= 'youremail@youremail.com'
+SMTP_CONTACT_US_PAGE_TO = 'youremail@youremail.com'
+SMTP_PORT = 587
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+#CPATCHA
+CPATCHA_SECRET = 'YourGoogleReCaptchaSecretKey'
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+#PARSEDASHBOARD
+PARSEDASHBOARD_USERNAME = 'username'
+PARSEDASHBOARD_PASSWORD = 'password'
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Go to **parse-server-node-js** folder
+```bash
+npm install
+npm run start
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Go to [http://localhost:1337/dashboard](http://localhost:1337/dashboard)
 
-## Learn More
+Login the panel and go to **Dashboard > Config**
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Add parameters like below;
 
-### Code Splitting
+**CpatchaSiteKey** : Your Google Recaptcha Site key
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+**SiteName** : Your Site Name
 
-### Analyzing the Bundle Size
+Go to **main** folder
+```bash
+npm install
+npm run start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+New version of parse server disabled except some extensions all file extensions to upload. You can fix this situation comment the code like below.
 
-### Making a Progressive Web App
+Go to **parse-server-node-js>node_modules>parse-serverlib>Routers>FilesRouter.js**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+**Comment** Line 147 to 150 Like Below;
+```javascript
+// if (!isValidExtension(extension)) {
+//   next(new _node.default.Error(_node.default.Error.FILE_SAVE_ERROR, `File upload of extension ${extension} is disabled.`));
+//   return;
+// }
+```
 
-### Advanced Configuration
+## Usage
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Go to **parse-server-node-js** folder and start the Parse Server
+```bash
+npm run start
+```
 
-### Deployment
+Go to main folder and start the React Front-End
+```bash
+npm run start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Contributing
 
-### `npm run build` fails to minify
+Pull requests are welcome. For major changes, please open an issue first
+to discuss what you would like to change.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)

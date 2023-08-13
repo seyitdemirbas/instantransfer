@@ -1,7 +1,10 @@
 /* eslint-disable linebreak-style */
+import axios from 'axios';
+import { SMTPClient } from 'emailjs';
+import { generate } from "random-words";
 
-Parse.Cloud.beforeSaveFile(async (request) => {
-  const axios = require('axios');
+Parse.Cloud.beforeSave(Parse.File, async (request) => {
+  // const axios = require('axios');
   const { file, user } = request;
   file.addMetadata('createdById', user.id);
   file.addTag('createdById', user.id);
@@ -14,21 +17,29 @@ Parse.Cloud.beforeSaveFile(async (request) => {
   })
     .then(function (response) {
       // console.log(response.data.success);
-      return response.data.success
+      // const slicedArray = response.data['error-codes'];
+      // console.log(slicedArray.toString())
+      return response
     })
-    .catch(function () {
-      return false;
-    })
-
-  if(!query === true) {
-    throw "Error Cpatcha is not true";
+    // .catch(function () {
+    //   return false;
+    // })
+  
+  let errorCode = query.data['error-codes'] && query.data['error-codes'].toString();
+  // console.log(query)
+  // console.log(query.data.success)
+  // console.log(errorCode)
+  if(!query.data.success === true){
+    if(!(errorCode === 'timeout-or-duplicate')){
+      throw "Error Cpatcha is not true";
+    }
   }
   // console.log(file.metadata().cpatcha)
   // throw "Error Cpatcha is not true";
 });
 
 Parse.Cloud.beforeSave(Parse.User, async (req) => {
-  const axios = require('axios');
+  // const axios = require('axios');
 
   const cpatcha = await req.object.get("cpatcha")
 
@@ -68,7 +79,7 @@ Parse.Cloud.afterSave(Parse.User, async (req) => {
 
 
 Parse.Cloud.define('contantUs', async req => {
-  const axios = require('axios');
+  // const axios = require('axios');
   const cpatcha = req.params.cpatcha
   const query = await axios.get('https://www.google.com/recaptcha/api/siteverify', {
     params: {
@@ -88,7 +99,7 @@ Parse.Cloud.define('contantUs', async req => {
     throw "Error, Cpatcha is not true";
   }
 
-  const { SMTPClient } = require('emailjs');
+  // const { SMTPClient } = require('emailjs');
 
   const client = new SMTPClient({
     user: process.env.SMTP_USERNAME,
@@ -187,7 +198,7 @@ Parse.Cloud.define('deleteFile', async (request) => {
 });
 
 Parse.Cloud.afterSaveFile(async (request) => {
-  const randomWords = require('random-words');
+  // const randomWords = require('random-words');
   const { file, fileSize, user} = request;
 
   async function isHaveRouterName(word) {
@@ -200,7 +211,7 @@ Parse.Cloud.afterSaveFile(async (request) => {
     let exit = false;
     while (!exit) {
       // eslint-disable-next-line no-var
-      var word = randomWords()
+      var word = generate();
       // eslint-disable-next-line no-await-in-loop
       const searchWordsQuery = await isHaveRouterName(word);
       // console.log(word)
