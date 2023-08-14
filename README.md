@@ -85,7 +85,7 @@ npm run start
 
 New version of parse server disabled except some extensions all file extensions to upload. You can fix this situation comment the code like below.
 
-Go to **parse-server-node-js>node_modules>parse-serverlib>Routers>FilesRouter.js**
+Go to **parse-server-node-js>node_modules>parse-server>lib>Routers>FilesRouter.js**
 
 **Comment** line 147 to 150 like below;
 
@@ -114,7 +114,7 @@ npm run start
 
 On forgot your password page normally entering wrong email does not result errors. if you want to display error's, you can comment the code like below.
 
-Go to **parse-server-node-js>node_modules>parse-serverlib>Routers>UserRouter.js**
+Go to **parse-server-node-js>node_modules>parse-server>lib>Routers>UserRouter.js**
 
 **Comment** line 377 to 379 like below;
 
