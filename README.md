@@ -70,7 +70,7 @@ Login the panel and go to **Dashboard > Config**
 
 Add parameters like below;
 
-![plot](./readme-files/readme.jpg)
+![plot](./readme-files/readme.JPG)
 
 **CpatchaSiteKey** : Your Google Recaptcha Site key
 
