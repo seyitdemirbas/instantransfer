@@ -1,6 +1,6 @@
-# Instant Transfer Project
+# InstanTransfer Project
 
-In this project, a file upload and download infrastructure has been prepared to quickly share rememberable file links over the web. Example site: [Fileil.com](https://fileil.com)
+In this project, a file upload and download infrastructure has been prepared to quickly share rememberable file links over the web. Demo site: [Fileil.com](https://fileil.com)
 
 [React](https://github.com/facebook/react) was used for the Front-End and [Parse Server](https://github.com/parse-community/parse-server/) was used for the Back-End.
 
@@ -8,24 +8,30 @@ In this project, a file upload and download infrastructure has been prepared to 
 
 Use the package manager [npm](https://www.npmjs.com/package/npm)
 
-[Node.js v18.x](https://www.npmjs.com/package/npm)
+[Node.js v18.x](https://nodejs.org/en/download)
 
 [MongoDB 5 or 6](https://www.mongodb.com/try/download/community)
 
-Google Recaptcha v2
+[Google Recaptcha v2](https://www.google.com/recaptcha/about/)
 
 ## Installation
+**Note:** Parse server on nodejs may not work properly in windows environment. We recommend you to use Linux environment.
 
-Create .env file main folder. Add below code and edit the parameters in a necessary way.
+Create an .env file in the **main** folder. Add below code and edit the parameters in a necessary way.
 
 ```bash
 #.env file
+REACT_APP_WEBSITE_NAME = 'Site Name'
+REACT_APP_DESCRIPTON_CONTENT = 'Site Meta Description'
+
+
+#PARSE SERVER
 REACT_APP_PARSE_CONFIG_SERVER_URL = 'http://localhost:1337/parse'
 REACT_APP_PARSE_CONFIG_APP_ID = '123456'
 REACT_APP_PARSE_CONFIG_JAVASCRIPT_KEY = '123456'
 ```
 
-Create .env file to **parse-server-node-js**  folder. Add below code and edit the parameters in a necessary way.
+Create an .env file in the **parse-server-node-js** folder. Add below code and edit the parameters in a necessary way.
 
 ```bash
 #.env file
@@ -38,26 +44,26 @@ JAVASCRIPT_KEY = '123456'
 SERVER_URL = 'http://localhost:1337/parse'
 PUBLIC_SERVER_URL = 'http://localhost:1337/parse'
 
-#YOUR DOMAİN OF CLİENT SİDE URL
+#YOUR DOMAİN OF CLİENT SİDE URL FOR EMAİL HTML CONTENT
 CLIENT_URL = 'http://localhost'
 
 #SMTP
 SMTP_HOST = 'smtp.youremail.com'
 SMTP_USERNAME = 'youremail@youremail.com'
 SMTP_PASSWORD = 'yoursmtppassword'
-SMTP_FROM_ADRESS= 'youremail@youremail.com'
+SMTP_FROM_ADRESS = 'youremail@youremail.com'
 SMTP_CONTACT_US_PAGE_TO = 'youremail@youremail.com'
 SMTP_PORT = 587
 
-#CPATCHA
+#CAPTCHA
 CPATCHA_SECRET = 'YourGoogleReCaptchaSecretKey'
 
-#PARSEDASHBOARD
+#PARSE DASHBOARD LOGIN INFO
 PARSEDASHBOARD_USERNAME = 'username'
 PARSEDASHBOARD_PASSWORD = 'password'
 ```
 
-Go to **parse-server-node-js** folder
+Go to the **parse-server-node-js** folder
 
 ```bash
 npm install
@@ -104,7 +110,7 @@ Go to **parse-server-node-js** folder and start the Parse Server
 npm run start
 ```
 
-Go to main folder and start the React Front-End
+Go to **main** folder and start the React Front-End
 
 ```bash
 npm run start
@@ -112,7 +118,7 @@ npm run start
 
 ## Configuration
 
-On forgot your password page normally entering wrong email does not result errors. if you want to display error's, you can comment the code like below.
+On forgot your password page entering wrong email normally does not result errors. If you want to display error's, you can comment the code like below.
 
 Go to **parse-server-node-js>node_modules>parse-server>lib>Routers>UserRouter.js**
 
