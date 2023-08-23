@@ -69,11 +69,11 @@ const RecentFiles = () => {
             </Table.HeadCell>
             <Table.HeadCell className='hidden md:table-cell'>
                 Size
-            </Table.HeadCell>
-            <Table.HeadCell>
+            </Table.HeadCell> 
+            <Table.HeadCell className='hidden md:table-cell'>
                 Route
             </Table.HeadCell>
-            <Table.HeadCell className=''>
+            <Table.HeadCell>
               <span className="sr-only">
                 Go to File
               </span>
