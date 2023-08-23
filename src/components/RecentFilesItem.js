@@ -17,7 +17,7 @@ const RecentFilesItem = (props) => {
         <Table.Cell className='hidden md:table-cell'>
             {formatBytes(filesize)}
         </Table.Cell>
-        <Table.Cell>
+        <Table.Cell className='hidden md:table-cell'>
             {fileroute}
         </Table.Cell>
         <Table.Cell className='whitespace-nowrap'>

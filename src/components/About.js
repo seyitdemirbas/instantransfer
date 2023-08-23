@@ -11,7 +11,7 @@ function About() {
       </Accordion.Title>
       <Accordion.Content>
         <p className="mb-2 text-gray-800 dark:text-gray-400">
-        Transfer your file over the web between devices in seconds. Upload your file to any membership with no strings attached and get a link that can be written and remembered quickly!
+        Transfer your file over the web between devices in seconds. Upload your file to any membership with no strings attached and get a link that can be written and remembered quickly.
         </p>
       </Accordion.Content>
     </Accordion.Panel>
@@ -21,7 +21,7 @@ function About() {
       </Accordion.Title>
       <Accordion.Content>
         <p className="mb-2 text-gray-800 dark:text-gray-400">
-          Of course! After uploading the file you are automatically redirected to the file page. Here you can quickly switch to another device by changing the file route to a name you can remember.
+          Of course. After uploading the file you are automatically redirected to the file page. Here you can quickly switch to another device by changing the file route to a name you can remember.
         </p>
       </Accordion.Content>
     </Accordion.Panel>
@@ -31,7 +31,7 @@ function About() {
       </Accordion.Title>
       <Accordion.Content>
         <p className="mb-2 text-gray-800 dark:text-gray-400">
-          Your files are stored for 3 days. This is more than enough time to transfer the file!
+          Your files are stored for 3 days.
         </p>
       </Accordion.Content>
     </Accordion.Panel>
