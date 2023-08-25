@@ -8,8 +8,8 @@ function HomePage() {
   return (
     <React.Fragment>
       <SEO
-        title= {siteName + ' | Upload a file and transfer between devices in seconds'}
-        description={siteName + ' is Transfer your file over the web between devices in seconds. Upload your file to any membership, no strings attached, and get a link that can be written quickly!'}
+        title= {process.env.REACT_APP_META_TITLE}
+        description={process.env.REACT_APP_META_DESCRIPTION}
         name={siteName}
         type='article' />
       <Upload/>
