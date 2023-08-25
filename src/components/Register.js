@@ -1,17 +1,19 @@
-import { Label, TextInput} from 'flowbite-react'
+import { TextInput} from 'flowbite-react'
 import React,{useRef,useState} from 'react'
+import { HiMail,HiLockClosed,HiUser } from 'react-icons/hi';
 import Parse from 'parse'
 import { setAlert } from '../store/slices/generalSlice'
 import { setUserTrigger } from '../store/slices/generalSlice';
 import { useDispatch } from 'react-redux'
-// import { useNavigate } from 'react-router'
 import ReCpatcha from './ReCpatcha';
 import ButtonWithLoading from './ButtonWithLoading';
+import SEO from './HelmetSeo'
 
 const Register = () => {
     const dispatch = useDispatch()
     const recaptchaRef = useRef(null);
     const [loading, setloading] = useState(false);
+    const siteName = Parse.Config.current().get('SiteName')
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -68,61 +70,51 @@ const Register = () => {
 
   return (
     <React.Fragment>
+        <SEO
+        title= {siteName + ' | Register the Site'}
+        description={'A section on the website that register the site. You can register with email, username and password.'}
+        name={siteName}
+        type='article' />
         <h1 className='font-medium text-gray-900 dark:text-gray-300 mb-2'>Register the site</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
                 <div className="mb-2 block">
-                <Label
-                    htmlFor="email"
-                    value="Your email"
-                />
                 </div>
                 <TextInput
                 id="email"
                 type="email"
+                icon={HiMail}
                 placeholder="name@mail.com"
                 required={true}
                 shadow={true}
                 />
             </div>
             <div>
-                <div className="mb-2 block">
-                <Label
-                    htmlFor="username"
-                    value="Your username"
-                />
-                </div>
                 <TextInput
                 id="username"
                 type="username"
+                placeholder='username'
+                icon={HiUser}
                 required={true}
                 shadow={true}
                 />
             </div>
             <div>
-                <div className="mb-2 block">
-                <Label
-                    htmlFor="password"
-                    value="Your password"
-                />
-                </div>
                 <TextInput
                 id="password"
+                icon={HiLockClosed}
+                placeholder='password'
                 type="password"
                 required={true}
                 shadow={true}
                 />
             </div>
             <div>
-                <div className="mb-2 block">
-                <Label
-                    htmlFor="repeat-password"
-                    value="Repeat password"
-                />
-                </div>
                 <TextInput
                 id="repeat-password"
                 type="password"
+                icon={HiLockClosed}
+                placeholder='repeat password'
                 required={true}
                 shadow={true}   
                 />

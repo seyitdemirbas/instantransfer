@@ -14,9 +14,6 @@ export function getRemainingTime(expiresAtTime,crTime) {
     const currentTime = new Date(crTime)
     const expiresAt = new Date(expiresAtTime)
     const remainingTime = new Date(expiresAt - currentTime);
-    // const days = remainingTime.getUTCDate() - 1
-    // let hours = remainingTime.getUTCHours();
-    // let minutes = remainingTime.getUTCMinutes();
 
     const days    = Math.floor( remainingTime / (1000 * 60 * 60 * 24));
     const hours   = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));

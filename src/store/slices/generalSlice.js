@@ -6,7 +6,6 @@ import Parse from 'parse';
 export const getCurrentTime = createAsyncThunk("genral/getCurrentTime", async (req, {rejectWithValue}) => {
   const data = await Parse.Cloud.run('getServerTime')
   .catch((err)=>{
-    // console.log(err)
     const error = {
         type: "error",
         msg: "Something went wrong."

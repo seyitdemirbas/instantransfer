@@ -5,6 +5,8 @@ import { setAlert } from '../store/slices/generalSlice'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router'
 import ButtonWithLoading from './ButtonWithLoading';
+import { HiLockClosed,HiLockOpen } from 'react-icons/hi';
+import SEO from './HelmetSeo'
 
 const Settings = () => {
   const inputRefCurrentPassword = useRef(null)
@@ -13,6 +15,7 @@ const Settings = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [loading, setloading] = useState(false);
+  const siteName = Parse.Config.current().get('SiteName')
 
   const handleSubmit = async (e) => {
       e.preventDefault();
@@ -47,19 +50,27 @@ const Settings = () => {
   }
   return (
     <React.Fragment>
+      <SEO
+        title= {siteName + ' | User Settings'}
+        description={'A section on the website that for set settings.'}
+        name={siteName}
+        type='article' />
+
       <h1 className='font-medium text-gray-900 dark:text-gray-300 mb-2'>Change Your Password</h1>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div>
         <div className="mb-2 block">
           <Label
-            htmlFor="password2"
+            htmlFor="current-password"
             value="Current password"
           />
         </div>
         <TextInput
-          id="password2"
+          id="current-password"
           type="password"
+          icon={HiLockOpen}
+          placeholder='current password'
           required={true}
           shadow={true}
           ref={inputRefCurrentPassword}
@@ -68,13 +79,15 @@ const Settings = () => {
       <div>
         <div className="mb-2 block">
           <Label
-            htmlFor="repeat-password"
+            htmlFor="new-password"
             value="New password"
           />
         </div>
         <TextInput
-          id="repeat-password"
+          id="new-password"
           type="password"
+          icon={HiLockClosed}
+          placeholder='new password'
           required={true}
           shadow={true}
           ref={inputRefPassword}
@@ -90,6 +103,8 @@ const Settings = () => {
         <TextInput
           id="repeat-password"
           type="password"
+          placeholder='repeat new password'
+          icon={HiLockClosed}
           required={true}
           shadow={true}
           ref={inputRefPasswordRepeat}

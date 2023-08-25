@@ -1,11 +1,13 @@
 import React,{useState,useRef} from 'react'
 import ButtonWithLoading from './ButtonWithLoading'
 import { Label, TextInput,Textarea} from 'flowbite-react'
+import { HiMail,HiBookOpen } from 'react-icons/hi';
 import Parse from 'parse';
 import { useDispatch, useSelector } from 'react-redux'
 import { setAlert } from '../store/slices/generalSlice';
 import ReCpatcha from './ReCpatcha';
 import { useNavigate } from 'react-router';
+import SEO from './HelmetSeo'
 
 function ContactUs() {
   const [loading, setloading] = useState(false);
@@ -14,6 +16,7 @@ function ContactUs() {
   const navigate = useNavigate()
   const currentUser = Parse.User.current()
   const isAnon = useSelector((state) => state.general.user.info.isAnon)
+  const siteName = Parse.Config.current().get('SiteName')
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,6 +59,11 @@ function ContactUs() {
 
   return (
     <React.Fragment>
+      <SEO
+      title= {siteName + ' | Contact Us'}
+      description={'A section on the website that contact to site owner. You can contact us.'}
+      name={siteName}
+      type='article' />
       <h1 className='font-medium text-gray-900 dark:text-gray-300 mb-2'>Contact Us</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         { isAnon &&
@@ -68,6 +76,7 @@ function ContactUs() {
           </div>
           <TextInput
           id="email"
+          icon={HiMail}
           type="email"
           placeholder="name@mail.com"
           required={true}
@@ -85,6 +94,7 @@ function ContactUs() {
           <TextInput
             id="subject"
             type="text"
+            icon={HiBookOpen}
             placeholder="Let us know how we can help you"
             required={true}
             shadow={true}

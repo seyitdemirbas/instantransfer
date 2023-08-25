@@ -5,7 +5,6 @@ import {BsDownload} from "react-icons/bs"
 import { downloadFileFromDatabase } from '../store/slices/filePageSlice';
 import { useDispatch } from 'react-redux';
 import * as fileSaver from "file-saver";
-// import { setAlert } from '../store/slices/generalSlice';
 
 export const FilePageDownload = (props) => {
     const dispatch = useDispatch()
@@ -20,13 +19,6 @@ export const FilePageDownload = (props) => {
             const file = new File([blob], fileName, { type: fileMimeType });
             fileSaver.saveAs(file);
         }
-        // else if (downloadFileFromDatabase.rejected.match(fileBlob)){
-        //     const alertData = {
-        //         type:"error",
-        //         msg:"Download Failed : Some error occured."
-        //     }
-        //     dispatch(setAlert(alertData))
-        // }
     }
 
     return (
