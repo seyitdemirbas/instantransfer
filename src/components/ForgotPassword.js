@@ -6,12 +6,14 @@ import { setAlert } from '../store/slices/generalSlice';
 import { useDispatch } from 'react-redux';
 import ButtonWithLoading from './ButtonWithLoading';
 import { useNavigate } from 'react-router';
+import SEO from './HelmetSeo'
 
 
 function ForgotPassword() {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
+    const siteName = Parse.Config.current().get('SiteName')
 
     const requestPasswordReset = (e) => {
         e.preventDefault();
@@ -33,6 +35,11 @@ function ForgotPassword() {
 
     return (
         <React.Fragment>
+        <SEO
+        title= {siteName + ' | Forgot your password?'}
+        description={'A section on the website that email your information about the your forgotten credentials.'}
+        name={siteName}
+        type='article' />
         <h1 className='font-medium text-gray-900 dark:text-gray-300 mb-2'>Forgot your password?</h1>
             <form onSubmit={requestPasswordReset} className="flex flex-col gap-3">
                 <div>

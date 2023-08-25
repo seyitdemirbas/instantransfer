@@ -22,11 +22,7 @@ const ChangeFileRoute = (props) => {
 
 
     const handleClick = event => {
-      // 👇️ toggle shown state
       setIsShown(current => !current);
-  
-      // 👇️ or simply set it to true
-      // setIsShown(true);
     };
 
     const handleChange = (e) => {

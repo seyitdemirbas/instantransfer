@@ -1,16 +1,19 @@
 import React,{useState} from 'react'
-import { Label, TextInput } from 'flowbite-react'
+import { TextInput } from 'flowbite-react'
 import { useDispatch } from 'react-redux'
+import { HiMail,HiLockClosed } from 'react-icons/hi';
 import { setAlert } from '../store/slices/generalSlice'
 import { setUserTrigger } from '../store/slices/generalSlice';
 import Parse from 'parse'
 import { resetRecentFileList, setIsRendered } from '../store/slices/myFilesSlice';
 import { Link } from 'react-router-dom'
 import ButtonWithLoading from './ButtonWithLoading';
+import SEO from './HelmetSeo'
 
 const Login = () => {
     const dispatch = useDispatch()
     const [loading, setloading] = useState(false);
+    const siteName = Parse.Config.current().get('SiteName')
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -40,31 +43,31 @@ const Login = () => {
 
   return (
     <React.Fragment>
+        <SEO
+        title= {siteName + ' | Login the Site'}
+        description={'A section on the website that login the site. You can login with email or username and password.'}
+        name={siteName}
+        type='article' />
         <h1 className='font-medium text-gray-900 dark:text-gray-300 mb-2'>Login the site</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
                 <div className="mb-2 block">
-                <Label
-                    htmlFor="emailOrUsername"
-                    value="Your email or username"
-                />
                 </div>
                 <TextInput
                 id="emailOrUsername"
-                placeholder="name@mail.com"
+                icon={HiMail}
+                placeholder="name@mail.com or username"
                 required={true}
                 />
             </div>
             <div>
-                <div className="mb-2 block">
-                <Label
-                    htmlFor="password1"
-                    value="Your password"
-                />
+                <div>
                 </div>
                 <TextInput
                 id="password1"
                 type="password"
+                icon={HiLockClosed}
+                placeholder="password"
                 required={true}
                 />
             </div>

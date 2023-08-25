@@ -6,15 +6,17 @@ import { AiOutlineLoading3Quarters} from 'react-icons/ai';
 import RecentFilesItem from './RecentFilesItem';
 import { getFilesFromDatabase, setIsRendered } from '../store/slices/myFilesSlice';
 import { deleteFileFromDatabase } from '../store/slices/filePageSlice';
+import SEO from './HelmetSeo'
+import Parse from 'parse';
 
 const RecentFiles = () => {
   const files = useSelector(state => state.myFiles.recentfilelist);
   const loading = useSelector(state => state.myFiles.loading);
   const isRendered = useSelector(state => state.myFiles.isRendered.value);
   const dispatch = useDispatch();
-
   const [checkboxes, setCheckboxes] = useState([]);
   const [modalState, setModalState] = useState(false)
+  const siteName = Parse.Config.current().get('SiteName')
 
   const handleCheckboxChange = (value, checked) => {
       if (checked) {
@@ -54,9 +56,13 @@ const RecentFiles = () => {
     )
   }else {
     return (
-    
       <React.Fragment>
-      {/* <div className='overflow-x-auto'> */}
+       <SEO
+      title= {siteName + ' | Recent Files'}
+      description={'A section on the website that provides information about the your recent files. You can list informations about your files and you can delete files.'}
+      name={siteName}
+      type='article' />
+
       <form onSubmit={(e)=>{
         e.preventDefault()
         setModalState(true)
@@ -90,7 +96,7 @@ const RecentFiles = () => {
                 return <RecentFilesItem handleCheckboxChange={handleCheckboxChange} key={files.id} {...files}  />
               })
               :<Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800"><Table.Cell>There is no files.</Table.Cell></Table.Row>
-              }
+              } 
           </Table.Body>
         </Table>
         {checkboxes.length > 0 &&
@@ -99,7 +105,6 @@ const RecentFiles = () => {
         </div>
         }
       </form>
-      {/* </div> */}
 
       <Modal
         show={modalState}

@@ -40,7 +40,6 @@ export const returnFile = createAsyncThunk("filepage/returnFile", async (req, {r
       return {}
     }
   }).catch((err)=>{
-    // console.log(err)
     const error = {
         type: "error",
         msg: "Something went wrong."
@@ -102,7 +101,6 @@ export const downloadFileFromDatabase = createAsyncThunk("filepage/downloadFileF
   var query = new Parse.Query(object);
   const results = query.get(id)
   .then(async (resFile)=>{
-    // console.log(resFile.get("file").url())
     const fileUrl = await resFile.get("file").url()
     const response = await fetch(fileUrl);
     const contentLength = response.headers.get('content-length');

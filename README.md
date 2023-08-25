@@ -21,8 +21,8 @@ Create an .env file in the **main** folder. Add below code and edit the paramete
 
 ```bash
 #.env file
-REACT_APP_WEBSITE_NAME = 'Site Name'
-REACT_APP_DESCRIPTON_CONTENT = 'Site Meta Description'
+REACT_APP_META_TITLE = 'Site Meta Title'
+REACT_APP_META_DESCRIPTION = 'Site Meta Description'
 
 
 #PARSE SERVER

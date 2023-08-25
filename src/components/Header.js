@@ -24,7 +24,7 @@ function Header() {
         const fetchCurrentUserDB = async () =>{
             Parse.User.current().fetch()
             .then(res=>setIsFetch(true))
-            .catch(err=>console.log(err))
+            // .catch(err=>console.log(err))
         }
         fetchCurrentUserDB()
     }, []);
