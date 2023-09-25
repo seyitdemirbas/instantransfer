@@ -2,49 +2,49 @@ import { createSlice,createAsyncThunk } from '@reduxjs/toolkit'
 import Parse from 'parse';
 import { editFileRoute, removeFile } from './myFilesSlice';
 import { changeDownloadProgressValue } from "./generalSlice";
+import axios from 'axios';
+
+const serverUrl = process.env.REACT_APP_SERVER_URL
 
 export const returnFile = createAsyncThunk("filepage/returnFile", async (req, {rejectWithValue,dispatch}) => {
-  const fileObject = Parse.Object.extend("routes");
-  const query = new Parse.Query(fileObject);
-  query.equalTo("routeName", req);
-  query.include("fileObjectRelation");
-  const results = await query.find().then((res)=>{
-      if(!(res.length === 0)){
-        const createdBy = res[0].get("fileObjectRelation").get("createdBy").id
-        const publicStatus = res[0].get("fileObjectRelation").get("publicStatus")
-        if((publicStatus === false && createdBy === Parse.User.current().id) || publicStatus === true) {
-          const data = {
-            id : res[0].get("fileObjectRelation").id,
-            fileName: res[0].get("fileObjectRelation").get("fileName"),
-            fileSize: res[0].get("fileObjectRelation").get("fileSize"),
-            fileType: res[0].get("fileObjectRelation").get("fileTypeMime"),
-            fileRoute: res[0].get("routeName"), 
-            createdAt: res[0].get("fileObjectRelation").get("createdAt").toJSON(),
-            expiresAt: res[0].get("fileObjectRelation").get("expiresAt").toJSON(),
-            createdBy: res[0].get("fileObjectRelation").get("createdBy").id,
-            isPrivate: !res[0].get("fileObjectRelation").get("publicStatus")
-          }
-          return data;
-        }else{
-          const data = {
-            isPrivate: !res[0].get("fileObjectRelation").get("publicStatus")
-          }
-          return data;
+  const results = await axios({
+    data: {
+      route: req,
+    },
+    method: "POST",
+    url: serverUrl + "getFile", // route name
+  })
+  .then((res)=>{
+    const {data} = res
+    if(!(res.length === 0)){
+      const createdBy = '1234'
+      const publicStatus = data.isPrivate
+      if((publicStatus === false && createdBy === '1234') || publicStatus === true) {
+        const datas = {
+          id : data._id,
+          fileName: data.originalname,
+          fileSize: data.size,
+          fileType: data.mimetype,
+          fileRoute: data.route, 
+          createdAt: data.date,
+          filePath: data.path,
+          expiresAt: data.expiredate,
+          createdBy: '1234',
+          isPrivate: data.isPrivate
         }
+        return datas;
+      }else{
+        const data = {
+          isPrivate: !data.isPrivate
+        }
+        return data;
+      }
     }else{
-      // const error = {
-      //     type: "error",
-      //     msg: "There is no such file this route."
-      // }
-      // return rejectWithValue()
       return {}
     }
-  }).catch((err)=>{
-    const error = {
-        type: "error",
-        msg: "Something went wrong."
-    }
-    return rejectWithValue(error)
+  })
+  .catch((err)=>{
+      return {}
   })
 
   const data = await results;
@@ -52,20 +52,26 @@ export const returnFile = createAsyncThunk("filepage/returnFile", async (req, {r
 });
 
 export const changeFileRouteNameDB = createAsyncThunk("filepage/changeFileRouteNameDB", async (params, {rejectWithValue,dispatch}) => {
-  const results = Parse.Cloud.run('changeFileRouteName',params)
+  const results = await axios({
+    data: {
+      currentRoute: params.currentRouteName,
+      newRoute: params.newRouteName
+    },
+    method: "POST",
+    url: serverUrl + "changeRouteName", 
+  })
   .then((res)=>{
-      const data = res.get("routeName")
-      const route = {
-        oldroute: params.currentRouteName,
-        newroute: data
-      }
-      dispatch(editFileRoute(route))
-      return data
+    const route = {
+      oldroute: res.data.oldRoute,
+      newroute: res.data.newRoute
+    }
+    dispatch(editFileRoute(route))
+    return route.newroute
   })
   .catch((err)=>{
       const error = {
         type: "error",
-        msg: err.message
+        msg: err.response ? err.response.data.error : 'Network Error'
       }
       return rejectWithValue(error)
   })
@@ -74,64 +80,60 @@ export const changeFileRouteNameDB = createAsyncThunk("filepage/changeFileRouteN
 });
 
 export const deleteFileFromDatabase = createAsyncThunk("filepage/deleteFileFromDatabase", async (params, {rejectWithValue,dispatch}) => {
-  const results = Parse.Cloud.run('deleteFile',params)
+  const results = await axios({
+    data: {
+      id: params.id
+    },
+    method: "DELETE",
+    url: serverUrl + "deleteFile", 
+  })
   .then((res)=>{
       const data = {
         type : "success",
-        msg: res
+        msg: res.data.success
       }
       dispatch(resetCurrentFile())
-      dispatch(removeFile(params.routeName))
+      dispatch(removeFile(params.id))
       
       return (params.isMultiple ? '' : data)
   })
   .catch((err)=>{
       const error = {
         type: "error",
-        msg: err.message
+        msg: err.response ? err.response.data.error : 'Network Error'
       }
       return rejectWithValue(error)
   })
-  const data = await results;
+  const data = results;
   return data
 });
 
-export const downloadFileFromDatabase = createAsyncThunk("filepage/downloadFileFromDatabase", async (id, {rejectWithValue,dispatch}) => {
-  var object = Parse.Object.extend("files");
-  var query = new Parse.Query(object);
-  const results = query.get(id)
-  .then(async (resFile)=>{
-    const fileUrl = await resFile.get("file").url()
-    const response = await fetch(fileUrl);
-    const contentLength = response.headers.get('content-length');
-    const total = parseInt(contentLength, 10);
-    let loaded = 0;
+export const downloadFileFromDatabase = createAsyncThunk("filepage/downloadFileFromDatabase", async (path, {rejectWithValue,dispatch}) => {
+  const resBlob = await axios({
+        url: serverUrl + path, //your url
+        method: 'GET',
+        responseType: 'blob',
+        onDownloadProgress: (progressEvent) => {
 
-    const resBlob = new Response(new ReadableStream({
-      async start(controller) {
-        const reader = response.body.getReader();
-        for (;;) {
-          const {done, value} = await reader.read();
-          if (done) break;
-          loaded += value.byteLength;
-          dispatch(changeDownloadProgressValue(Math.round(loaded/total*100)))
-          controller.enqueue(value);
-        }
-        controller.close();
-      },
-    }));
+          let percentCompleted = Math.round(progressEvent.loaded * 100 / 
+          progressEvent.total);
 
-    const data = await resBlob.blob();
-    return data
-  })
-  .catch((err)=>{
+          dispatch(changeDownloadProgressValue(percentCompleted))
+       }
+    })
+    .then((res)=>{
+      dispatch(changeDownloadProgressValue(0))
+      return res
+    })
+    .catch((err)=>{
       const error = {
         type: "error",
-        msg: "Download Failed : Some error occured."
+        msg: "Some error occured."
       }
       return rejectWithValue(error)
   })
-  const data = await results;
+
+  const data = resBlob.data
   return data
 });
 

@@ -19,6 +19,7 @@ const RecentFiles = () => {
   const siteName = Parse.Config.current().get('SiteName')
 
   const handleCheckboxChange = (value, checked) => {
+      console.log(checkboxes)
       if (checked) {
           setCheckboxes([...checkboxes, value]);
       } else {
@@ -28,11 +29,11 @@ const RecentFiles = () => {
 
   const handleSubmit = async () => {
       setModalState(false)
-      Array.from(checkboxes).forEach(async routeName => {
-        const params = {routeName : routeName, isMultiple: true}
+      Array.from(checkboxes).forEach(async fileid => {
+        const params = {id : fileid, isMultiple: true}
         const resultAction = await dispatch(deleteFileFromDatabase(params))
         if(deleteFileFromDatabase.fulfilled.match(resultAction)) {
-          setCheckboxes(checkboxes.filter((item) => item !== routeName))
+          setCheckboxes(checkboxes.filter((item) => item !== fileid))
         }
       });
   };

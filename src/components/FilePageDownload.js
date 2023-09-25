@@ -10,10 +10,10 @@ export const FilePageDownload = (props) => {
     const dispatch = useDispatch()
 
     const handleDownload = async () => {
-        const fileId = props.currentFile.id
+        const filePath = props.currentFile.filePath
         const fileMimeType = props.currentFile.fileType
         const fileName = props.currentFile.fileName
-        const fileBlob = await dispatch(downloadFileFromDatabase(fileId))
+        const fileBlob = await dispatch(downloadFileFromDatabase(filePath))
         if(downloadFileFromDatabase.fulfilled.match(fileBlob)) {
             const blob = fileBlob.payload
             const file = new File([blob], fileName, { type: fileMimeType });

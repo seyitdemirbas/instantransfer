@@ -76,9 +76,9 @@ function FilePage(props) {
                             />
                         }
                     </Card>
-                    {currentFile.createdBy === Parse.User.current().id &&
+                    {/* {currentFile.createdBy === Parse.User.current().id && }*/
                         <div className='mt-2 inline-block float-right'>
-                            <FilePageDelete fileRoute={currentFile.fileRoute} Loading={Loading}/>
+                            <FilePageDelete fileid={currentFile.id} Loading={Loading}/>
                         </div>
                     }
                     </React.Fragment>

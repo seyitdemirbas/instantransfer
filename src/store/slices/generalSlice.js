@@ -1,10 +1,15 @@
 import { createSlice,createAsyncThunk} from '@reduxjs/toolkit'
 import { addFileToDatabase } from './myFilesSlice';
 import { changeFileRouteNameDB, returnFile,deleteFileFromDatabase,downloadFileFromDatabase } from './filePageSlice';
-import Parse from 'parse';
+import axios from 'axios';
+
+const serverUrl = process.env.REACT_APP_SERVER_URL
 
 export const getCurrentTime = createAsyncThunk("genral/getCurrentTime", async (req, {rejectWithValue}) => {
-  const data = await Parse.Cloud.run('getServerTime')
+  const results = await axios({
+    method: "GET",
+    url: serverUrl + "getServerTime", // route name
+  })
   .catch((err)=>{
     const error = {
         type: "error",
@@ -12,8 +17,7 @@ export const getCurrentTime = createAsyncThunk("genral/getCurrentTime", async (r
     }
     return rejectWithValue(error)
   })
-
-  return data.toJSON()
+  return results.data.dateNow
 });
 
 const initialState = {
@@ -90,6 +94,7 @@ export const generalSlice = createSlice({
       },
       [deleteFileFromDatabase.fulfilled]: (state, action) => {
         state.alert = action.payload
+        console.log(action.payload)
       },
       [downloadFileFromDatabase.rejected]: (state, action) => {
         state.alert = action.payload

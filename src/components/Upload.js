@@ -25,7 +25,6 @@ const [isPrivate, setIsPrivate]= useState(false)
 useEffect(() => {
   if(isComponentMounted) {
     navigate(uploadDoneNavigationRoute)
-    dispatch(changeUploadProgressValue(0))
   }
 // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [uploadDoneNavigationRoute])
@@ -35,7 +34,7 @@ const handleSubmit = (e) => {
     e.preventDefault();
     // dispatch(changeProgressValue(0))
     const inputRefs = {
-      cpatchaValue : recaptchaRef.current.getValue(),
+      captchaValue : recaptchaRef.current.getValue(),
       fileRef : inputRef,
       isPrivate : isPrivate
     }

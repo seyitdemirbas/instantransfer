@@ -66,7 +66,7 @@ const ChangeFileRoute = (props) => {
                     </Tooltip>
                 </div>
             }
-            {props.currentFile.createdBy === Parse.User.current().id &&
+            {/* { props.currentFile.createdBy === Parse.User.current().id && */
             <React.Fragment>
                 {!isShown &&
                     <div onClick={handleClick} className='cursor-pointer'>

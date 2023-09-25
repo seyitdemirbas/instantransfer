@@ -5,8 +5,7 @@ import { formatBytes } from './generalFunctions';
 
 
 const RecentFilesItem = (props) => {
-  const {filename,filesize,fileroute} = props;
-
+  const {filename,filesize,fileroute,id} = props;
   return (
     <React.Fragment>
     
@@ -24,7 +23,7 @@ const RecentFilesItem = (props) => {
             <Link className='bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 dark:hover:bg-blue-300' to={`/${fileroute}`}>Go to File</Link>
         </Table.Cell>
         <Table.Cell>
-            <Checkbox id={fileroute} onChange={(e) => props.handleCheckboxChange(e.target.id, e.target.checked)}/>
+            <Checkbox id={id} onChange={(e) => props.handleCheckboxChange(e.target.id, e.target.checked)}/>
         </Table.Cell>
     </Table.Row>
     </React.Fragment>

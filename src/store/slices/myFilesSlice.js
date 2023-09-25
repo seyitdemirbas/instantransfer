@@ -1,11 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import Parse from "parse";
-import { v4 as uuidv4 } from 'uuid';
 import { changeUploadProgressValue } from "./generalSlice";
+import axios from 'axios';
+
+const serverUrl = process.env.REACT_APP_SERVER_URL
 
 export const addFileToDatabase = createAsyncThunk("myfiles/addFileToDatabase", async (req, {rejectWithValue,dispatch}) => {
     const file = req.fileRef.current.files[0]
     const isPrivate = !req.isPrivate
+    const captchaValue = req.captchaValue
+
 
     if(!file) {
         const error = {
@@ -23,111 +26,87 @@ export const addFileToDatabase = createAsyncThunk("myfiles/addFileToDatabase", a
         return rejectWithValue(error)
     }
 
-    if(!req.cpatchaValue) {
-        const error = {
-            type: "warning",
-            msg: "Please do cpatcha"
-        }
-        return rejectWithValue(error)
-    }
+    // if(!captchaValue) {
+    //     const error = {
+    //         type: "warning",
+    //         msg: "Please do cpatcha"
+    //     }
+    //     return rejectWithValue(error)
+    // }
 
-    const originalfileName = file.name
-    const fileNameId = uuidv4();
-    const fileType = file.type
-
-    const fileupload = new Parse.File(fileNameId, file, fileType ? fileType : 'application/octet-stream');
-    fileupload.addMetadata('cpatcha', req.cpatchaValue)
-    const promise = fileupload.save({
-        progress: (progressValue, loaded, total, { type }) => {
-            if (type === "upload" && progressValue !== null) {
-            let progressValueFinal = Math.floor(progressValue * 100)
-            dispatch(changeUploadProgressValue(progressValueFinal))
-            }
-        }
+    const bodyFormData = new FormData();
+    bodyFormData.append('file', file);
+    bodyFormData.append('isPrivate', isPrivate);
+    const results = await axios({
+        headers: {
+            "Content-Type": "multipart/form-data",
+            "captchavalue": `${captchaValue}`
+        },
+        method: "POST",
+        data: bodyFormData,
+        url: serverUrl + "upload", // route name
+        onUploadProgress: progress => {
+            const { total, loaded } = progress;
+            const totalSizeInMB = total / 1000000;
+            const loadedSizeInMB = loaded / 1000000;
+            const uploadPercentage = (loadedSizeInMB / totalSizeInMB) * 100;
+            dispatch(changeUploadProgressValue(uploadPercentage.toFixed(2)))
+        },
+        encType: "multipart/form-data",
     })
-    .then((result)=>{
-        const data = result.name();
-        return data;
+    .then((res)=>{
+        const {data} = res
+        const datas = {
+            id : data.id,
+            filename : data.originalname,
+            filetype: data.mimetype,
+            fileroute: data.route,
+            filesize: data.size,
+            filepath: data.path,
+            expiresat: data.expiredate,
+            addeddate: data.date,
+            isPrivate: data.isPrivate
+        }
+        dispatch(changeUploadProgressValue(0))
+        return datas
     })
     .catch((err)=>{
-        const errorMessageString = JSON.stringify(err)
-        const errorMessageObject = JSON.parse(errorMessageString)
+        console.log(err)
         const error = {
             type: "error",
-            msg: errorMessageObject.message
+            msg: err.response ? err.response.data.error : 'Something went wrong'
         }
         return rejectWithValue(error)
     })
 
-    const promise1 = await promise
-
-    if(promise1.hasOwnProperty('payload') && promise1.payload.type === 'error') {
-        const data = await promise;
-        return data
-    }else {
-        const GameScore = Parse.Object.extend("files");
-        const query = new Parse.Query(GameScore);
-        query.equalTo("routerFileName", promise1);
-        const results = query.find()
-        .then((res)=>{
-            function removeExtension(filename) {
-                return filename.substring(0, filename.lastIndexOf('.')) || filename;
-            }
-            res[0].set("fileName", originalfileName)
-            res[0].set("fileNameWithoutExt", removeExtension(originalfileName))
-            res[0].set("publicStatus", isPrivate)
-            res[0].save();
-            const data = {
-                id : res[0].id,
-                filename : res[0].get("fileName"),
-                filetype: res[0].get("fileTypeMime"),
-                fileroute: res[0].get("FirstRouteName"),
-                filesize: res[0].get("fileSize"),
-                expiresat: res[0].get("expiresAt").toJSON(),
-                addeddate: res[0].get("createdAt").toJSON(),
-                isPrivate: res[0].get("publicStatus")
-            }
-            return data;
-        })
-        .catch((err)=>{
-            const error = {
-                type: "error",
-                msg: "Something went wrong. 2"
-            }
-            return rejectWithValue(error)
-        })
-
-        const data = await results;
-        return data
-    }
+    const data = results;
+    return data
 });
 
 export const getFilesFromDatabase = createAsyncThunk("myfiles/getFilesFromDatabase", async (req, {rejectWithValue,dispatch}) => {
-    const user = Parse.User.current();
-    if(user) {
-    const fileObject = Parse.Object.extend("routes");
-    const query = new Parse.Query(fileObject);
-    query.include("fileObjectRelation");
-    query.equalTo("createdBy", user);
-    query.descending('updatedAt');
-    const results = query.find()
+    // const user = Parse.User.current();
+    // if(user) {
+    const results = axios({
+        method: "GET",
+        url: serverUrl + "getFiles", // route name
+    })
     .then((res)=>{
+        const {data} = res
         const files = [];
-        res.forEach(async (item)=>{
+        data.forEach(async (item)=>{ 
             const file = {
-                id : item.get("fileObjectRelation").id,
-                filename : item.get("fileObjectRelation").get("fileName"),
-                filetype: item.get("fileObjectRelation").get("fileTypeMime"),
-                fileroute: item.get("routeName"),
-                filesize: item.get("fileObjectRelation").get("fileSize"),
-                expiresat: item.get("fileObjectRelation").get("expiresAt").toJSON(),
-                addeddate: item.get("fileObjectRelation").get("createdAt").toJSON(),
-                isPrivate: item.get("fileObjectRelation").get("publicStatus")
+                id : item._id,
+                filename : item.originalname,
+                filetype: item.mimetype,
+                fileroute: item.route,
+                filesize: item.size,
+                filepath: item.path,
+                expiresat: item.expiredate,
+                addeddate: item.date,
+                isPrivate: item.isPrivate
             }
-            
             files.push(file)
         })
-        
         return files
     })
     .catch((err)=>{
@@ -138,10 +117,8 @@ export const getFilesFromDatabase = createAsyncThunk("myfiles/getFilesFromDataba
         return rejectWithValue(error)
     })
 
-
     const data = await results;
     return data
-    }
 });
 
 
@@ -176,7 +153,7 @@ export const myFilesSlice = createSlice({
         return {
             ...state,
             recentfilelist: state.recentfilelist.filter((file) => {
-                return file.fileroute !== action.payload
+                return file.id !== action.payload
             }
             ) 
         };

@@ -10,9 +10,8 @@ const dispatch = useDispatch()
 const navigate = useNavigate()
 
 const handleClick = async () => {
-    const params = {routeName : props.fileRoute}
     setModalState(false)
-    const resultAction = await dispatch(deleteFileFromDatabase(params))
+    const resultAction = await dispatch(deleteFileFromDatabase({id: props.fileid}))
     if(deleteFileFromDatabase.fulfilled.match(resultAction)) {
         navigate('/static/recentfiles', {replace:true})
     }
