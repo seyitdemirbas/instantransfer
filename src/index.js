@@ -5,7 +5,6 @@ import { store } from './store/store';
 import { Provider } from 'react-redux'
 import AppRouter from './routers/AppRouter';
 import { HelmetProvider } from 'react-helmet-async';
-import './parse/parseConf'
 
 store.subscribe(()=> {
   console.log(store.getState())

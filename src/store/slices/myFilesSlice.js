@@ -13,7 +13,7 @@ export const addFileToDatabase = createAsyncThunk("myfiles/addFileToDatabase", a
     if(!file) {
         const error = {
             type: "warning",
-            msg: "There is no file"
+            msg: "Not selected a file"
         }
         return rejectWithValue(error)
     }
@@ -26,13 +26,13 @@ export const addFileToDatabase = createAsyncThunk("myfiles/addFileToDatabase", a
         return rejectWithValue(error)
     }
 
-    // if(!captchaValue) {
-    //     const error = {
-    //         type: "warning",
-    //         msg: "Please do cpatcha"
-    //     }
-    //     return rejectWithValue(error)
-    // }
+    if(!captchaValue) {
+        const error = {
+            type: "warning",
+            msg: "Please verify you are not robot"
+        }
+        return rejectWithValue(error)
+    }
 
     const bodyFormData = new FormData();
     bodyFormData.append('file', file);

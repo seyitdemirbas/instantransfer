@@ -1,31 +1,56 @@
 var express = require('express');
 var router = express.Router();
-const upload = require('../multer');
+const upload = require('../config/multer');
 const FileDbModel = require('../models/FileDbModel')
 const getUniqueRouteName = require('../utils/getuniqueroutename')
+const confirmCaptcha = require('../utils/recaptcha')
 const fs = require('fs');
-const axios = require('axios');
 const multer = require('multer');
+var email = require("emailjs/email");
+const routeAuth = require("../middleware/routeAuth");
 
 
-router.post('/upload', async function (req, res, next) {
-  const captchaValue = req.headers.captchavalue
+router.post('/contactUs', async function(req, res, next) {
 
-  const query = await axios.get('https://www.google.com/recaptcha/api/siteverify', {
-    params: {
-      secret: process.env.CAPTCHA_SECRET_KEY,
-      response: captchaValue ? captchaValue : '0'
+  const captchaValue = req.body.captcha
+  const captchaQuery = await confirmCaptcha(captchaValue)
+
+  if(captchaQuery === false) {
+    res.status(400).json({ error: 'Captcha is not verified'})
+    return 0;
+  }
+
+  var server 	= email.server.connect({
+    user:    process.env.SMTP_USERNAME, 
+    password: process.env.SMTP_PASSWORD, 
+    host:    process.env.SMTP_HOST, 
+    ssl:     true
+  });
+  
+  const senderEmailText = 'Original Sender Email: ' + req.body.email + '\n\n';
+  // send the message and get a callback with an error or details of the message that was sent
+  server.send({
+    text:    senderEmailText + req.body.message, 
+    from:    `you ${process.env.SMTP_FROM_ADRESS}`, 
+    to:      process.env.SMTP_CONTACT_US_PAGE_TO,
+    subject: req.body.subject
+  }, function(err, message) {
+    if(message) {
+      res.status(200).json({ response : 'Message sended.'})
+    }else{
+      res.status(400).json({ error: 'Message sent failed.'})
     }
-  })
-  .then(function (response) {
-    return response.data.success
-  })
-  .catch(function () {
-    return false;
-  })
+  });
+});
 
-  if(!(query === true)) {
-    res.status(400).json({ error: 'Cpatcha is not true'})
+
+router.post('/upload', routeAuth , async function (req, res, next) {
+  const captchaValue = req.headers.captchavalue
+  const captchaQuery = await confirmCaptcha(captchaValue)
+
+
+  if(captchaQuery === false) {
+    res.status(400).json({ error: 'Captcha is not verified'})
     return 0;
   }
 
@@ -50,7 +75,8 @@ router.post('/upload', async function (req, res, next) {
         route : routeName,
         path : req.file.path,
         size : req.file.size,
-        isPrivate : req.body.isPrivate
+        isPrivate : req.body.isPrivate,
+        owner: req.user ? req.user.user_id : ''
       });
       fileDbConnect.save().then((dbRes) =>{
         res.status(201).json({ 
@@ -69,14 +95,10 @@ router.post('/upload', async function (req, res, next) {
   })
 })
 
-router.use(function customErrorHandler(err, req, res, next) {
-  res.status(400).json({error: err.toString()});
-});
-
 /* GET home page. */
-// router.get('/', function(req, res, next) {
-//   res.render('index', { title: 'Express' });
-// });
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Express' });
+});
 
 router.get('/getServerTime', async function(req, res, next) {
   const dateNow = new Date();
@@ -86,7 +108,6 @@ router.get('/getServerTime', async function(req, res, next) {
 router.delete('/deleteFile', async function(req, res, next) {
   FileDbModel.findByIdAndRemove({ _id: req.body.id })
   .then((response)=>{
-    console.log(response)
     fs.unlink(response.path, (err) => {
       if (err) {
         res.status(404).json({ error: 'File Not Found' })

@@ -15,7 +15,8 @@ const Settings = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [loading, setloading] = useState(false);
-  const siteName = Parse.Config.current().get('SiteName')
+  // const siteName = Parse.Config.current().get('SiteName')
+  const siteName = 'site name'
 
   const handleSubmit = async (e) => {
       e.preventDefault();
@@ -27,25 +28,25 @@ const Settings = () => {
         setloading(false)
         dispatch(setAlert({type:"warning",msg:'New Passwords dont match.'}))
       }else {
-      const user = new Parse.User.current();
-      user.verifyPassword(inputRefCurrentPassword.current.value)
-      .then((res)=>{
-        user.setPassword(inputRefPassword.current.value)
-        user.save().then((res)=>{
-            setloading(false)
-            dispatch(setAlert({type:"success",msg:"The password has been successfully changed."}))
-            navigate('/')
-          }).catch((err)=>{
-            setloading(false)
-            dispatch(setAlert({type:"error",msg:err.message}))
-          })
-      })
-      .catch((err)=>{
-        setloading(false)
-        dispatch(setAlert({type:"error",msg:"Your current password is wrong"}))
-        inputRefCurrentPassword.current.focus();
-        inputRefCurrentPassword.current.value= '';
-      })
+      // const user = new Parse.User.current();
+      // user.verifyPassword(inputRefCurrentPassword.current.value)
+      // .then((res)=>{
+      //   user.setPassword(inputRefPassword.current.value)
+      //   user.save().then((res)=>{
+      //       setloading(false)
+      //       dispatch(setAlert({type:"success",msg:"The password has been successfully changed."}))
+      //       navigate('/')
+      //     }).catch((err)=>{
+      //       setloading(false)
+      //       dispatch(setAlert({type:"error",msg:err.message}))
+      //     })
+      // })
+      // .catch((err)=>{
+      //   setloading(false)
+      //   dispatch(setAlert({type:"error",msg:"Your current password is wrong"}))
+      //   inputRefCurrentPassword.current.focus();
+      //   inputRefCurrentPassword.current.value= '';
+      // })
     }
   }
   return (

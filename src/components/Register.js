@@ -13,7 +13,8 @@ const Register = () => {
     const dispatch = useDispatch()
     const recaptchaRef = useRef(null);
     const [loading, setloading] = useState(false);
-    const siteName = Parse.Config.current().get('SiteName')
+    // const siteName = Parse.Config.current().get('SiteName')
+    const siteName = 'site name'
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -35,36 +36,36 @@ const Register = () => {
             setloading(false)
             dispatch(setAlert({type:"warning",msg:'Please confirm cpatcha'}))
           }else {
-            const user = new Parse.User.current();
+            // const user = new Parse.User.current();
             const cpatchaValue = recaptchaRef.current.getValue();
-            user.set("username", username);
-            user.set("password", password);
-            user.set("email", email);
-            user.set("isAnon", false)
-            user.set("cpatcha", cpatchaValue ? cpatchaValue : '00' )
-            user.signUp()
-            .then((res)=>{
-                setloading(false)
-                dispatch(setAlert({type:"success",msg:"Registration Successful. Welcome "+res.get("username")}))
-                dispatch(setUserTrigger())
-            })
-            .catch((err)=>{
-                setloading(false)
+            // user.set("username", username);
+            // user.set("password", password);
+            // user.set("email", email);
+            // user.set("isAnon", false)
+            // user.set("cpatcha", cpatchaValue ? cpatchaValue : '00' )
+            // user.signUp()
+            // .then((res)=>{
+            //     setloading(false)
+            //     dispatch(setAlert({type:"success",msg:"Registration Successful. Welcome "+res.get("username")}))
+            //     dispatch(setUserTrigger())
+            // })
+            // .catch((err)=>{
+            //     setloading(false)
 
-                if(err.code === 202) {
-                    e.target['username'].focus();
-                }
+            //     if(err.code === 202) {
+            //         e.target['username'].focus();
+            //     }
 
-                if(err.code === 203) {
-                    e.target['email'].focus();
-                }
+            //     if(err.code === 203) {
+            //         e.target['email'].focus();
+            //     }
 
-                if(cpatchaValue){
-                    recaptchaRef.current.reset();
-                  }
+            //     if(cpatchaValue){
+            //         recaptchaRef.current.reset();
+            //       }
                   
-                dispatch(setAlert({type:"error",msg:err.message}))
-            })
+            //     dispatch(setAlert({type:"error",msg:err.message}))
+            // })
         }
     }
 

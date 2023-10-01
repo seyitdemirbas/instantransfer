@@ -59,7 +59,7 @@ function FilePage(props) {
                         <p className="font-normal text-gray-700 dark:text-gray-400">
                             <span className='font-bold'>Expires At:</span> {currentFile.expiresAt && getRemainingTime(currentFile.expiresAt,currentTime)}
                         </p>
-                        {currentFile.createdBy === Parse.User.current().id && !isAnon &&
+                        {//currentFile.createdBy === Parse.User.current().id && !isAnon &&
                             <PrivateToggle isPrivate={currentFile.isPrivate} setIsPrivate={toggleIsPrivate} stateType='redux' fileId={currentFile.id}/>
                         }
                         {Object.keys(currentFile).length > 0 &&

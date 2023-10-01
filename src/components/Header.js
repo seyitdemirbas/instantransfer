@@ -6,7 +6,7 @@ import { NavLink, Link} from 'react-router-dom'
 import logo from '../logo.png';
 import { useSelector,useDispatch } from 'react-redux';
 import { setAlert, setUserTrigger } from '../store/slices/generalSlice';
-import Parse from 'parse';
+// import Parse from 'parse';
 import { resetRecentFileList } from '../store/slices/myFilesSlice';
 import { resetCurrentFileWi } from '../store/slices/filePageSlice';
 
@@ -17,16 +17,17 @@ function Header() {
     const [isShown, setIsShown] = useState(false)
     const [isFetch, setIsFetch] = useState(false)
     const [isLoadingSpinner, setIsLoadingSpinner] = useState(false)
-    const isVerified = isFetch ? (Parse.User.current() ? Parse.User.current().get('emailVerified') : true) : true
+    // const isVerified = isFetch ? (Parse.User.current() ? Parse.User.current().get('emailVerified') : true) : true
+    const isVerified = true
     const dispatch = useDispatch()
 
     useEffect(() => {
-        const fetchCurrentUserDB = async () =>{
-            Parse.User.current().fetch()
-            .then(res=>setIsFetch(true))
-            // .catch(err=>console.log(err))
-        }
-        fetchCurrentUserDB()
+        // const fetchCurrentUserDB = async () =>{
+        //     Parse.User.current().fetch()
+        //     .then(res=>setIsFetch(true))
+        //     // .catch(err=>console.log(err))
+        // }
+        // fetchCurrentUserDB()
     }, []);
     
     useEffect(()=>{
@@ -37,43 +38,43 @@ function Header() {
     let NavbarLinkClassNameActive = "block py-2 pr-4 pl-3 md:p-0 bg-blue-700 text-white dark:text-white md:bg-transparent md:text-blue-700"
 
     const handleLogOut = () => {
-        Parse.User.logOut()
-        .then((res)=>{
-            dispatch(resetRecentFileList())
-            dispatch(resetCurrentFileWi())
-            dispatch(setUserTrigger())
-        })
-        .catch(()=>{
-            const error = {
-                type: "error",
-                msg: "Something went wrong."
-            }
-            dispatch(setAlert(error))
-        })
+        // Parse.User.logOut()
+        // .then((res)=>{
+        //     dispatch(resetRecentFileList())
+        //     dispatch(resetCurrentFileWi())
+        //     dispatch(setUserTrigger())
+        // })
+        // .catch(()=>{
+        //     const error = {
+        //         type: "error",
+        //         msg: "Something went wrong."
+        //     }
+        //     dispatch(setAlert(error))
+        // })
     }
 
     const handleVerifyRequest = async (e) => {
-        e.preventDefault();
-        setIsLoadingSpinner(true)
-        const email = Parse.User.current().get('email')
-        await Parse.User.requestEmailVerification(email)
-        .then((res)=>{
-            setIsShown(false)
-            setIsLoadingSpinner(false)
-            const error = {
-                type: "success",
-                msg: "Email verification request sended."
-            }
-            dispatch(setAlert(error))
-        })
-        .catch((err)=>{
-            setIsLoadingSpinner(false)
-            const error = {
-                type: "error",
-                msg: err.message
-            }
-            dispatch(setAlert(error))
-        })
+        // e.preventDefault();
+        // setIsLoadingSpinner(true)
+        // const email = Parse.User.current().get('email')
+        // await Parse.User.requestEmailVerification(email)
+        // .then((res)=>{
+        //     setIsShown(false)
+        //     setIsLoadingSpinner(false)
+        //     const error = {
+        //         type: "success",
+        //         msg: "Email verification request sended."
+        //     }
+        //     dispatch(setAlert(error))
+        // })
+        // .catch((err)=>{
+        //     setIsLoadingSpinner(false)
+        //     const error = {
+        //         type: "error",
+        //         msg: err.message
+        //     }
+        //     dispatch(setAlert(error))
+        // })
     }
 
   return (
@@ -109,7 +110,8 @@ function Header() {
                     alt="Site Logo"
                 />
                 <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white hover:text-blue-700">
-                    {Parse.Config.current().get('SiteName')}
+                    {/* {Parse.Config.current().get('SiteName')} */}
+                    Site Name
                 </span>
             </Navbar.Brand>
             <div className="flex md:order-2">

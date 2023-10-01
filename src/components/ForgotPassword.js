@@ -13,23 +13,24 @@ function ForgotPassword() {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
-    const siteName = Parse.Config.current().get('SiteName')
+    // const siteName = Parse.Config.current().get('SiteName')
+    const siteName = 'site name'
 
     const requestPasswordReset = (e) => {
         e.preventDefault();
         setLoading(true)
         const email = e.target['email'].value;
-        Parse.User.requestPasswordReset(email)
-        .then(() => {
-            setLoading(false)
-            dispatch(setAlert({type:"success",msg:"if this email registered the reset link has been sended"}))
-            navigate("/static/login", {replace : true})
-        }).catch((error) => {
-        // Show the error message somewhere
-            setLoading(false)
-            e.target['email'].focus()
-            dispatch(setAlert({type:"error",msg:error.message}))
-        });
+        // Parse.User.requestPasswordReset(email)
+        // .then(() => {
+        //     setLoading(false)
+        //     dispatch(setAlert({type:"success",msg:"if this email registered the reset link has been sended"}))
+        //     navigate("/static/login", {replace : true})
+        // }).catch((error) => {
+        // // Show the error message somewhere
+        //     setLoading(false)
+        //     e.target['email'].focus()
+        //     dispatch(setAlert({type:"error",msg:error.message}))
+        // });
     }
 
 

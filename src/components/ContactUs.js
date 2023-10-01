@@ -8,19 +8,21 @@ import { setAlert } from '../store/slices/generalSlice';
 import ReCpatcha from './ReCpatcha';
 import { useNavigate } from 'react-router';
 import SEO from './HelmetSeo'
+import axios from 'axios'
 
 function ContactUs() {
   const [loading, setloading] = useState(false);
   const recaptchaRef = useRef(null);
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const currentUser = Parse.User.current()
+  // const currentUser = Parse.User.current()
   const isAnon = useSelector((state) => state.general.user.info.isAnon)
-  const siteName = Parse.Config.current().get('SiteName')
+  // const siteName = Parse.Config.current().get('SiteName')
+  const siteName = 'site name'
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const email = isAnon ? e.target['email'].value : currentUser.get('email')
+    const email = isAnon ? e.target['email'].value : 'as'// currentUser.get('email')
     const subject = e.target['subject'].value
     const message = e.target['message'].value
     const cpatchaValue = recaptchaRef.current.getValue()
@@ -35,16 +37,19 @@ function ContactUs() {
       dispatch(setAlert({type:"warning",msg:'Please confirm cpatcha'}))
     }
     else{
-      const params = {
-        email : email,
-        subject : subject,
-        message : message,
-        cpatcha : recaptchaRef.current.getValue()
-      }
-      await Parse.Cloud.run('contantUs',params)
+      const results = await axios({
+        data: {
+          email : email,
+          subject : subject,
+          message : message,
+          captcha : recaptchaRef.current.getValue()
+        },
+        method: "POST",
+        url: process.env.REACT_APP_SERVER_URL + "contactUs", 
+      })
       .then((res)=>{
         setloading(false)
-        dispatch(setAlert({type:"success", msg: res }))
+        dispatch(setAlert({type:"success", msg: res.data.response }))
         navigate('/')
       })
       .catch((err)=>{
@@ -52,7 +57,7 @@ function ContactUs() {
         if(cpatchaValue){
           recaptchaRef.current.reset();
         }
-        dispatch(setAlert({type:"error",msg: err.message ? err.message : err }))
+        dispatch(setAlert({type:"error", msg:  err.response ? err.response.data.error : 'Network Error' }))
       })
     }
   }

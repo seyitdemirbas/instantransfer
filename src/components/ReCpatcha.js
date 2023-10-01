@@ -6,7 +6,7 @@ function ReCpatcha(props) {
   return (
     <ReCAPTCHA
     ref={props.recaptchaRef}
-    sitekey= '6LfMD6cnAAAAABEb4j4AMW-EoZCpviyjpjgJHueB'
+    sitekey= {process.env.REACT_APP_CPATCHA_SITE_KEY}
     />  
   )
 }

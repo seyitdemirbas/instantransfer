@@ -2,7 +2,7 @@ import '../App.css';
 import { Outlet} from 'react-router-dom'
 import Header from './Header';
 import FooterF from './Footer';
-import Parse from 'parse';
+// import Parse from 'parse';
 import React, {useEffect,useState} from 'react';
 import {useComponentDidMount} from "./useComponentDidMount"
 import ToastContainerDiv,{ToastAlert} from './ToastAlert';
@@ -18,7 +18,7 @@ function MainPage() {
   const isComponentMounted = useComponentDidMount();
   const alertState = useSelector((state) => state.general.alert)
   const userTriggerState = useSelector((state) => state.general.user.trigger)
-  const currentUser = Parse.User.current()
+  // const currentUser = Parse.User.current()
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,51 +29,51 @@ function MainPage() {
   }, [alertState])
 
   useEffect(()=>{
+    setLoading(false)
+    // const fetchUser = async () => {
 
-    const fetchUser = async () => {
+    //   const errCode = await Parse.Config.get()
+    //   .then(res=>{return null})
+    //   .catch(err=>{return err.code})
 
-      const errCode = await Parse.Config.get()
-      .then(res=>{return null})
-      .catch(err=>{return err.code})
+    //   if(!currentUser || errCode === 209) {
+    //     await Parse.AnonymousUtils.logIn()
+    //     .then((res)=>{
+    //       res.set("isAnon", true)
+    //       res.save()
+    //       const userInfo = {
+    //         isAnon: true,
+    //       }
+    //       dispatch(setUser(userInfo))
+    //       setLoading(false);
+    //     })
+    //     .catch((err)=>{
+    //         const error = {
+    //             type: "error",
+    //             msg: "Something went wrong."
+    //         }
+    //         dispatch(setAlert(error))
+    //         setLoading(false);
+    //     })
+    //   }else if(currentUser.get('isAnon')){
+    //     const userInfo = {
+    //       isAnon: true
+    //     }
+    //     dispatch(setUser(userInfo))
+    //     setLoading(false);
+    //   }
+    //   else{
+    //     const userInfo = {
+    //       isAnon: false,
+    //       username: currentUser.get('username'),
+    //       email: currentUser.get('email')
+    //     }
+    //     dispatch(setUser(userInfo))
+    //     setLoading(false);
+    //   }
+    // }
 
-      if(!currentUser || errCode === 209) {
-        await Parse.AnonymousUtils.logIn()
-        .then((res)=>{
-          res.set("isAnon", true)
-          res.save()
-          const userInfo = {
-            isAnon: true,
-          }
-          dispatch(setUser(userInfo))
-          setLoading(false);
-        })
-        .catch((err)=>{
-            const error = {
-                type: "error",
-                msg: "Something went wrong."
-            }
-            dispatch(setAlert(error))
-            setLoading(false);
-        })
-      }else if(currentUser.get('isAnon')){
-        const userInfo = {
-          isAnon: true
-        }
-        dispatch(setUser(userInfo))
-        setLoading(false);
-      }
-      else{
-        const userInfo = {
-          isAnon: false,
-          username: currentUser.get('username'),
-          email: currentUser.get('email')
-        }
-        dispatch(setUser(userInfo))
-        setLoading(false);
-      }
-    }
-
-    fetchUser()
+    // fetchUser()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[userTriggerState])
 

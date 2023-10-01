@@ -6,6 +6,7 @@ const filesSchema = new Schema({
     originalname: { type: String, required: true },
     mimetype: { type: String, required: true, immutable: true},
     filename: { type: String, required: true },
+    owner: { type: String, immutable: true },
     isPrivate: { type: Boolean, required: true, default: false},
     path: { type: String, required: true, immutable: true},
     route: { 

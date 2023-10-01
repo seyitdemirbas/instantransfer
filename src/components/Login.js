@@ -13,7 +13,8 @@ import SEO from './HelmetSeo'
 const Login = () => {
     const dispatch = useDispatch()
     const [loading, setloading] = useState(false);
-    const siteName = Parse.Config.current().get('SiteName')
+    // const siteName = Parse.Config.current().get('SiteName')
+    const siteName = 'site name'
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -25,19 +26,19 @@ const Login = () => {
             setloading(false)
             dispatch(setAlert({type:"warning",msg:'Do not leave any blank space.'}))
           }else {
-            Parse.User.logIn(email,password)
-            .then((res)=>{
-                setloading(false)
-                dispatch(setAlert({type:"success",msg:"Login Successful. Welcome "+res.get("username")}))
-                dispatch(resetRecentFileList())
-                dispatch(setIsRendered(false))
-                dispatch(setUserTrigger())
-            })
-            .catch((err)=>{
-                setloading(false)
-                e.target['password1'].focus()
-                dispatch(setAlert({type:"error",msg:err.message}))
-            })
+            // Parse.User.logIn(email,password)
+            // .then((res)=>{
+            //     setloading(false)
+            //     dispatch(setAlert({type:"success",msg:"Login Successful. Welcome "+res.get("username")}))
+            //     dispatch(resetRecentFileList())
+            //     dispatch(setIsRendered(false))
+            //     dispatch(setUserTrigger())
+            // })
+            // .catch((err)=>{
+            //     setloading(false)
+            //     e.target['password1'].focus()
+            //     dispatch(setAlert({type:"error",msg:err.message}))
+            // })
         }
     }
 

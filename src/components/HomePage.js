@@ -1,10 +1,11 @@
 import React from 'react'
 import Upload from './Upload'
 import SEO from './HelmetSeo'
-import Parse from 'parse'
+// import Parse from 'parse'
 
 function HomePage() {
-  const siteName = Parse.Config.current().get('SiteName')
+  // const siteName = Parse.Config.current().get('SiteName')
+  const siteName = 'Site Name'
   return (
     <React.Fragment>
       <SEO

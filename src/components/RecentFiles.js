@@ -16,7 +16,8 @@ const RecentFiles = () => {
   const dispatch = useDispatch();
   const [checkboxes, setCheckboxes] = useState([]);
   const [modalState, setModalState] = useState(false)
-  const siteName = Parse.Config.current().get('SiteName')
+  // const siteName = Parse.Config.current().get('SiteName')
+  const siteName = 'site name'
 
   const handleCheckboxChange = (value, checked) => {
       console.log(checkboxes)

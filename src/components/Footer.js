@@ -4,9 +4,10 @@ import { BsTwitter,BsGithub } from 'react-icons/bs';
 import Parse from 'parse';
 
 function FooterF() {
-  const TwitterHref = Parse.Config.current().get('TwitterLink')
-  const GithubHref = Parse.Config.current().get('GithubLink')
-
+  // const TwitterHref = Parse.Config.current().get('TwitterLink')
+  // const GithubHref = Parse.Config.current().get('GithubLink')
+  const TwitterHref = '#'
+  const GithubHref = '#'
   return (
     <Footer className='shadow-none' container={true}>
         <div className="w-full">
@@ -14,7 +15,7 @@ function FooterF() {
             <div className="w-full sm:flex sm:items-center sm:justify-between">
             <Footer.Copyright
                 href="#"
-                by={Parse.Config.current().get('SiteName') + '™' }
+                by={'site name' + '™' }
                 year={2022}
             />
             <div className="mt-4 flex space-x-6 sm:mt-0 sm:justify-center">

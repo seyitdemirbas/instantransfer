@@ -3,11 +3,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors')
-const mongoose = require('mongoose');
+require("./config/database").connect();
 require('dotenv').config()
-console.log(process.env.CAPTCHA_SECRET_KEY) // remove this after you've confirmed it is working
 
-mongoose.connect('mongodb://127.0.0.1:27017/test');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');

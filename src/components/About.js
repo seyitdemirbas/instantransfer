@@ -4,7 +4,8 @@ import Parse from 'parse'
 import SEO from './HelmetSeo'
 
 function About() {
-  const siteName = Parse.Config.current().get('SiteName')
+  // const siteName = Parse.Config.current().get('SiteName')
+  const siteName = 'site name'
   return (
     <React.Fragment>
       <SEO
