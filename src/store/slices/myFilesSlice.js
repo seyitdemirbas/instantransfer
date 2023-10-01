@@ -2,13 +2,14 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { changeUploadProgressValue } from "./generalSlice";
 import axios from 'axios';
 
+
 const serverUrl = process.env.REACT_APP_SERVER_URL
 
-export const addFileToDatabase = createAsyncThunk("myfiles/addFileToDatabase", async (req, {rejectWithValue,dispatch}) => {
+export const addFileToDatabase = createAsyncThunk("myfiles/addFileToDatabase", async (req, {getState,rejectWithValue,dispatch}) => {
     const file = req.fileRef.current.files[0]
     const isPrivate = !req.isPrivate
     const captchaValue = req.captchaValue
-
+    const token = getState().general.user.info.token
 
     if(!file) {
         const error = {
@@ -37,11 +38,15 @@ export const addFileToDatabase = createAsyncThunk("myfiles/addFileToDatabase", a
     const bodyFormData = new FormData();
     bodyFormData.append('file', file);
     bodyFormData.append('isPrivate', isPrivate);
+
+    var config = {
+        "Content-Type": "multipart/form-data",
+            "captchavalue": `${captchaValue}`,
+        ...(token && {'x-access-token' : token})
+        }
+
     const results = await axios({
-        headers: {
-            "Content-Type": "multipart/form-data",
-            "captchavalue": `${captchaValue}`
-        },
+        headers: config,
         method: "POST",
         data: bodyFormData,
         url: serverUrl + "upload", // route name
@@ -83,11 +88,15 @@ export const addFileToDatabase = createAsyncThunk("myfiles/addFileToDatabase", a
     return data
 });
 
-export const getFilesFromDatabase = createAsyncThunk("myfiles/getFilesFromDatabase", async (req, {rejectWithValue,dispatch}) => {
+export const getFilesFromDatabase = createAsyncThunk("myfiles/getFilesFromDatabase", async (req, {getState,rejectWithValue,dispatch}) => {
     // const user = Parse.User.current();
     // if(user) {
+    const token = getState().general.user.info.token
     const results = axios({
         method: "GET",
+        headers: {
+            "x-access-token" : token
+        },
         url: serverUrl + "getFiles", // route name
     })
     .then((res)=>{

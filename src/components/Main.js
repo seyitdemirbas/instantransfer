@@ -10,7 +10,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setAlert, setUser } from '../store/slices/generalSlice';
 import { AiOutlineLoading3Quarters} from 'react-icons/ai';
 import { IconContext } from "react-icons";
-
+import { useCookies } from 'react-cookie'
+import axios from 'axios'
 
 
 function MainPage() {
@@ -18,8 +19,10 @@ function MainPage() {
   const isComponentMounted = useComponentDidMount();
   const alertState = useSelector((state) => state.general.alert)
   const userTriggerState = useSelector((state) => state.general.user.trigger)
-  // const currentUser = Parse.User.current()
+  const currentUser = useSelector((state) => state.general.user)
   const [loading, setLoading] = useState(true);
+  const [cookies,setCookie] = useCookies(['user_token']);
+
 
   useEffect(() => {
     if(isComponentMounted) {
@@ -29,13 +32,58 @@ function MainPage() {
   }, [alertState])
 
   useEffect(()=>{
-    setLoading(false)
-    // const fetchUser = async () => {
-
-    //   const errCode = await Parse.Config.get()
-    //   .then(res=>{return null})
-    //   .catch(err=>{return err.code})
-
+    const fetchUser = async () => {
+      const serverUrl = process.env.REACT_APP_SERVER_URL
+    if(cookies.user_token) {
+      await axios({
+        method: "GET",
+        headers: {
+          'x-access-token' : cookies.user_token
+        },
+        url: serverUrl + "users/getCurrentUser", // route name
+      })
+      .then((res)=>{
+        console.log(res)
+        const userInfo = {
+          isAnon : res.data.isanon,
+          email : res.data.email ? res.data.email : null,
+          token : cookies.user_token
+        }
+        dispatch(setUser(userInfo))
+        setLoading(false);
+      })
+      .catch((err)=>{
+          const error = {
+              type: "error",
+              msg: "Something went wrong. User info not gathered."
+          }
+          dispatch(setAlert(error))
+          setLoading(false);
+      })
+    }else{
+      await axios({
+        method: "GET",
+        url: serverUrl + "users/registerAnon", // route name
+      })
+      .then((res)=>{
+        const userInfo = {
+          isAnon : res.data.isanon,
+          token : res.data.token
+        }
+        setCookie('user_token', res.data.token, {path : '/', maxAge : 7200})
+        dispatch(setUser(userInfo))
+        setLoading(false);
+      })
+      .catch((err)=>{
+          const error = {
+              type: "error",
+              msg: "Something went wrong. User info not gathered."
+          }
+          dispatch(setAlert(error))
+          setLoading(false);
+      })
+    }
+    
     //   if(!currentUser || errCode === 209) {
     //     await Parse.AnonymousUtils.logIn()
     //     .then((res)=>{
@@ -71,9 +119,9 @@ function MainPage() {
     //     dispatch(setUser(userInfo))
     //     setLoading(false);
     //   }
-    // }
+    }
 
-    // fetchUser()
+    fetchUser()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[userTriggerState])
 

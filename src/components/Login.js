@@ -4,19 +4,25 @@ import { useDispatch } from 'react-redux'
 import { HiMail,HiLockClosed } from 'react-icons/hi';
 import { setAlert } from '../store/slices/generalSlice'
 import { setUserTrigger } from '../store/slices/generalSlice';
-import Parse from 'parse'
 import { resetRecentFileList, setIsRendered } from '../store/slices/myFilesSlice';
 import { Link } from 'react-router-dom'
 import ButtonWithLoading from './ButtonWithLoading';
 import SEO from './HelmetSeo'
+import axios from 'axios';
+import {useCookies} from 'react-cookie'
+
 
 const Login = () => {
     const dispatch = useDispatch()
     const [loading, setloading] = useState(false);
+    const [cookies, setCookie] = useCookies(['user_token']);
     // const siteName = Parse.Config.current().get('SiteName')
     const siteName = 'site name'
 
+    const serverUrl = process.env.REACT_APP_SERVER_URL
+
     const handleSubmit = async (e) => {
+
         e.preventDefault();
         setloading(true)
         const email = e.target['emailOrUsername'].value
@@ -26,6 +32,27 @@ const Login = () => {
             setloading(false)
             dispatch(setAlert({type:"warning",msg:'Do not leave any blank space.'}))
           }else {
+            await axios({
+                method: "POST",
+                data: {
+                    email : email,
+                    password : password
+                },
+                url: serverUrl + "users/login", // route name
+              })
+              .then((res)=>{
+                setloading(false)
+                setCookie('user_token', res.data.token, {path : '/', maxAge : 7200})
+                dispatch(setAlert({type:"success", msg:"Login Successful. Welcome " + res.data.email}))
+                dispatch(resetRecentFileList())
+                dispatch(setIsRendered(false))
+                dispatch(setUserTrigger())
+              })
+              .catch((err)=>{
+                setloading(false)
+                e.target['password1'].focus()
+                dispatch(setAlert({type:"error",msg:err.response.data.error}))
+              })
             // Parse.User.logIn(email,password)
             // .then((res)=>{
             //     setloading(false)
@@ -57,7 +84,7 @@ const Login = () => {
                 <TextInput
                 id="emailOrUsername"
                 icon={HiMail}
-                placeholder="name@mail.com or username"
+                placeholder="name@mail.com"
                 required={true}
                 />
             </div>

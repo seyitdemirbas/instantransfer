@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-var randomWords = require('random-words');
 
 const filesSchema = new Schema({
     originalname: { type: String, required: true },

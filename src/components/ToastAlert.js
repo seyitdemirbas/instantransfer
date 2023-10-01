@@ -3,7 +3,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const ToastAlert = (type,text) => {
-    if(type) {
+    if(type && text) {
       toast[type](text, {
           position: "bottom-center",
           autoClose: 3000,

@@ -41,10 +41,10 @@ router.post('/register', async function(req, res, next) {
 
     // Create token
     const token = jwt.sign(
-      { user_id: user._id, email },
+      { user_id: user._id, email, isanon: user.isanon },
       process.env.JWT_TOKEN_KEY,
       {
-        expiresIn: "2h",
+        expiresIn: "24h",
       }
     );
     // save user token
@@ -53,9 +53,40 @@ router.post('/register', async function(req, res, next) {
     // return new user
     res.status(201).json(user);
   } catch (err) {
-    console.log(err);
+    res.status(400).json(err);
   }
   // Our register logic ends here
+});
+
+/* GET users listing. */
+router.get('/registerAnon', async function(req, res, next) {
+  // Our register logic starts here
+  try {
+
+   // Create user in our database
+   const user = await User.create({
+     password: null,
+     isanon: true
+   });
+
+   // Create token
+   const token = jwt.sign(
+     { user_id: user._id, isanon : user.isanon},
+     process.env.JWT_TOKEN_KEY,
+     {
+       expiresIn: "24h",
+     }
+   );
+   // save user token
+   user.token = token;
+
+   // return new user
+   res.status(201).json(user);
+ } catch (err) {
+  console.log(err)
+  res.status(400).json({error: 'Error occured'});
+ }
+ // Our register logic ends here
 });
 
 router.post('/login', async function(req, res, next) {
@@ -91,6 +122,7 @@ router.post('/login', async function(req, res, next) {
       }
     } catch (err) {
       console.log(err);
+      res.status(400).json({error: 'Error occured'});
     }
     // Our register logic ends here
 });

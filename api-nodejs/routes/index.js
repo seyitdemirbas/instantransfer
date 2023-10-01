@@ -48,7 +48,6 @@ router.post('/upload', routeAuth , async function (req, res, next) {
   const captchaValue = req.headers.captchavalue
   const captchaQuery = await confirmCaptcha(captchaValue)
 
-
   if(captchaQuery === false) {
     res.status(400).json({ error: 'Captcha is not verified'})
     return 0;
@@ -76,7 +75,7 @@ router.post('/upload', routeAuth , async function (req, res, next) {
         path : req.file.path,
         size : req.file.size,
         isPrivate : req.body.isPrivate,
-        owner: req.user ? req.user.user_id : ''
+        owner: req.user ? req.user.user_id : null
       });
       fileDbConnect.save().then((dbRes) =>{
         res.status(201).json({ 
@@ -122,8 +121,10 @@ router.delete('/deleteFile', async function(req, res, next) {
   })
 });
 
-router.get('/getFiles', async function(req, res, next) {
-  const filter = {}
+router.get('/getFiles', routeAuth, async function(req, res, next) {
+  console.log(req.user)
+  const userid = req.user ? req.user.user_id : ''
+  const filter = {owner : userid}
   await FileDbModel.find(filter).then((dbRes)=>{
     res.status(200).json(dbRes)
   })

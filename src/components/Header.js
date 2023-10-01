@@ -123,7 +123,7 @@ function Header() {
                 <Dropdown.Header>
                 <span className="block text-sm">
                     {
-                    userInfoState.isAnon ? 'Anonymous' : userInfoState.username
+                    userInfoState.isAnon ? 'Anonymous' : ''
                     }
                 </span>
                 {

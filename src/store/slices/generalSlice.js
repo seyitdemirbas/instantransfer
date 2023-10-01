@@ -35,8 +35,8 @@ const initialState = {
   user: {
     info: {
       isAnon: true,
-      username:'',
-      email:''
+      email:'',
+      token: null,
     },
     trigger: 0,
   }

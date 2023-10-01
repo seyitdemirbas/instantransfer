@@ -6,10 +6,10 @@ import axios from 'axios';
 
 const serverUrl = process.env.REACT_APP_SERVER_URL
 
-export const returnFile = createAsyncThunk("filepage/returnFile", async (req, {rejectWithValue,dispatch}) => {
+export const returnFile = createAsyncThunk("filepage/returnFile", async (req, {getState,rejectWithValue,dispatch}) => {
   const results = await axios({
     data: {
-      route: req,
+      route: req
     },
     method: "POST",
     url: serverUrl + "getFile", // route name
