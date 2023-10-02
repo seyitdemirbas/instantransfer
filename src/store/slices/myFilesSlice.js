@@ -7,7 +7,7 @@ const serverUrl = process.env.REACT_APP_SERVER_URL
 
 export const addFileToDatabase = createAsyncThunk("myfiles/addFileToDatabase", async (req, {getState,rejectWithValue,dispatch}) => {
     const file = req.fileRef.current.files[0]
-    const isPrivate = !req.isPrivate
+    const isPrivate = req.isPrivate
     const captchaValue = req.captchaValue
     const token = getState().general.user.info.token
 
@@ -89,8 +89,6 @@ export const addFileToDatabase = createAsyncThunk("myfiles/addFileToDatabase", a
 });
 
 export const getFilesFromDatabase = createAsyncThunk("myfiles/getFilesFromDatabase", async (req, {getState,rejectWithValue,dispatch}) => {
-    // const user = Parse.User.current();
-    // if(user) {
     const token = getState().general.user.info.token
     const results = axios({
         method: "GET",

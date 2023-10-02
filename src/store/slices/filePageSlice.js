@@ -16,10 +16,12 @@ export const returnFile = createAsyncThunk("filepage/returnFile", async (req, {g
   })
   .then((res)=>{
     const {data} = res
+    console.log(data)
     if(!(res.length === 0)){
-      const createdBy = '1234'
-      const publicStatus = data.isPrivate
-      if((publicStatus === false && createdBy === '1234') || publicStatus === true) {
+      const createdBy = data.owner
+      const publicStatus = !data.isPrivate
+      const currentUserID = getState().general.user.info.id
+      if((publicStatus === false && createdBy === currentUserID) || publicStatus === true) {
         const datas = {
           id : data._id,
           fileName: data.originalname,
@@ -29,15 +31,15 @@ export const returnFile = createAsyncThunk("filepage/returnFile", async (req, {g
           createdAt: data.date,
           filePath: data.path,
           expiresAt: data.expiredate,
-          createdBy: '1234',
+          createdBy: data.owner,
           isPrivate: data.isPrivate
         }
         return datas;
       }else{
-        const data = {
+        const datas = {
           isPrivate: !data.isPrivate
         }
-        return data;
+        return datas;
       }
     }else{
       return {}
@@ -51,8 +53,12 @@ export const returnFile = createAsyncThunk("filepage/returnFile", async (req, {g
   return data
 });
 
-export const changeFileRouteNameDB = createAsyncThunk("filepage/changeFileRouteNameDB", async (params, {rejectWithValue,dispatch}) => {
+export const changeFileRouteNameDB = createAsyncThunk("filepage/changeFileRouteNameDB", async (params, {getState,rejectWithValue,dispatch}) => {
+  const token = getState().general.user.info.token
   const results = await axios({
+    headers: {
+      "x-access-token" : token
+    },
     data: {
       currentRoute: params.currentRouteName,
       newRoute: params.newRouteName
@@ -79,10 +85,14 @@ export const changeFileRouteNameDB = createAsyncThunk("filepage/changeFileRouteN
   return data
 });
 
-export const deleteFileFromDatabase = createAsyncThunk("filepage/deleteFileFromDatabase", async (params, {rejectWithValue,dispatch}) => {
+export const deleteFileFromDatabase = createAsyncThunk("filepage/deleteFileFromDatabase", async (params, {getState,rejectWithValue,dispatch}) => {
+  const token = getState().general.user.info.token
   const results = await axios({
     data: {
       id: params.id
+    },
+    headers: {
+      'x-access-token' : token
     },
     method: "DELETE",
     url: serverUrl + "deleteFile", 

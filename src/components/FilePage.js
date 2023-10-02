@@ -11,7 +11,6 @@ import { getCurrentTime } from '../store/slices/generalSlice';
 import ChangeFileRoute from './ChangeFileRoute';
 import { FilePageDownload } from './FilePageDownload';
 import { FilePageDelete } from './FilePageDelete';
-import Parse from 'parse';
 import NotFound from './NotFound';
 import PrivateToggle from './PrivateToggle';
 
@@ -21,6 +20,7 @@ function FilePage(props) {
     const Loading = useSelector((state) => state.filePage.loading)
     const currentFile = useSelector((state) => state.filePage.currentFile)
     const isAnon = useSelector((state) => state.general.user.info.isAnon)
+    const currentUserID = useSelector((state) => state.general.user.info.id)
     const currentTime = useSelector((state) => state.general.time.currentTime)
     const navigationState = useSelector((state) => state.filePage.navigation.routeChangeDone.route)
     const progressValue = useSelector((state) => state.general.progress.downloadValue)
@@ -59,7 +59,7 @@ function FilePage(props) {
                         <p className="font-normal text-gray-700 dark:text-gray-400">
                             <span className='font-bold'>Expires At:</span> {currentFile.expiresAt && getRemainingTime(currentFile.expiresAt,currentTime)}
                         </p>
-                        {//currentFile.createdBy === Parse.User.current().id && !isAnon &&
+                        {currentFile.createdBy === currentUserID && !isAnon &&
                             <PrivateToggle isPrivate={currentFile.isPrivate} setIsPrivate={toggleIsPrivate} stateType='redux' fileId={currentFile.id}/>
                         }
                         {Object.keys(currentFile).length > 0 &&
@@ -76,7 +76,7 @@ function FilePage(props) {
                             />
                         }
                     </Card>
-                    {/* {currentFile.createdBy === Parse.User.current().id && }*/
+                    {currentFile.createdBy === currentUserID && 
                         <div className='mt-2 inline-block float-right'>
                             <FilePageDelete fileid={currentFile.id} Loading={Loading}/>
                         </div>

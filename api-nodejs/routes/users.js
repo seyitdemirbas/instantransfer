@@ -44,7 +44,7 @@ router.post('/register', async function(req, res, next) {
       { user_id: user._id, email, isanon: user.isanon },
       process.env.JWT_TOKEN_KEY,
       {
-        expiresIn: "24h",
+        expiresIn: "72h",
       }
     );
     // save user token
@@ -74,7 +74,7 @@ router.get('/registerAnon', async function(req, res, next) {
      { user_id: user._id, isanon : user.isanon},
      process.env.JWT_TOKEN_KEY,
      {
-       expiresIn: "24h",
+       expiresIn: "72h",
      }
    );
    // save user token
@@ -108,7 +108,7 @@ router.post('/login', async function(req, res, next) {
           { user_id: user._id, email },
           process.env.JWT_TOKEN_KEY,
           {
-            expiresIn: "2h",
+            expiresIn: "72h",
           }
         );
   
@@ -121,7 +121,6 @@ router.post('/login', async function(req, res, next) {
         res.status(404).json({error : "Invalid Credentials"});
       }
     } catch (err) {
-      console.log(err);
       res.status(400).json({error: 'Error occured'});
     }
     // Our register logic ends here

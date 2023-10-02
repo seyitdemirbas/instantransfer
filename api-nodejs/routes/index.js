@@ -104,8 +104,9 @@ router.get('/getServerTime', async function(req, res, next) {
   res.status(200).json({dateNow})
 });
 
-router.delete('/deleteFile', async function(req, res, next) {
-  FileDbModel.findByIdAndRemove({ _id: req.body.id })
+router.delete('/deleteFile',routeAuth ,async function(req, res, next) {
+  const userid = req.user ? req.user.user_id : '0'
+  FileDbModel.findOneAndRemove({ _id: req.body.id, owner : userid })
   .then((response)=>{
     fs.unlink(response.path, (err) => {
       if (err) {
@@ -122,16 +123,35 @@ router.delete('/deleteFile', async function(req, res, next) {
 });
 
 router.get('/getFiles', routeAuth, async function(req, res, next) {
-  console.log(req.user)
-  const userid = req.user ? req.user.user_id : ''
+  const userid = req.user ? req.user.user_id : '0'
   const filter = {owner : userid}
   await FileDbModel.find(filter).then((dbRes)=>{
     res.status(200).json(dbRes)
   })
 });
 
-router.post('/changeRouteName', async function(req, res, next) {
-  const currentRoute = {route: req.body.currentRoute}
+router.post('/changePrivate', routeAuth, async function(req, res, next) {
+  const userid = req.user ? req.user.user_id : '0'
+  const fileID = {_id: req.body.id,owner : userid}
+  const newPrivate = {isPrivate : req.body.isPrivate}
+  console.log(req.body.isPrivate)
+  await FileDbModel.findOneAndUpdate(fileID, newPrivate, { runValidators: true })
+  .then((response)=>{
+    if(!(response === null)) {
+      res.status(200).json({
+        success: 'ok'
+      })
+    }else {
+      res.status(404).json({error: 'File is not found or is not yours.'})
+    }
+  })
+  .catch((err)=>{
+    res.status(400).json({error: 'Some Error Occured'})
+  });
+});
+
+router.post('/changeRouteName',routeAuth ,async function(req, res, next) {
+  const currentRoute = {route: req.body.currentRoute, owner: req.user ? req.user.user_id : '0'}
   const newRoute = {route: req.body.newRoute}
 
   if(req.body.currentRoute === req.body.newRoute) {
@@ -147,7 +167,7 @@ router.post('/changeRouteName', async function(req, res, next) {
         newRoute : req.body.newRoute
       })
     }else {
-      res.status(404).json({error: 'Route Not Found'})
+      res.status(404).json({error: 'Route Not Found or Not Yours'})
     }
   })
   .catch((err)=>{
@@ -155,7 +175,7 @@ router.post('/changeRouteName', async function(req, res, next) {
       res.status(400).json({error: 'This route has been taken by another user.'})
       return 0;
     }
-    res.status(400).json({error: err.errors.route.message})
+    res.status(400).json({error: err.errors ? err.errors.route.message : 'Some Error Occured'})
   });
 
 });

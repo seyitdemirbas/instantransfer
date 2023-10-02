@@ -37,6 +37,7 @@ const initialState = {
       isAnon: true,
       email:'',
       token: null,
+      id: ''
     },
     trigger: 0,
   }

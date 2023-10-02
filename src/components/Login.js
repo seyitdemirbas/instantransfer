@@ -15,7 +15,7 @@ import {useCookies} from 'react-cookie'
 const Login = () => {
     const dispatch = useDispatch()
     const [loading, setloading] = useState(false);
-    const [cookies, setCookie] = useCookies(['user_token']);
+    const [cookies, setCookie, removeCookie, updateCookies] = useCookies(['user_token']);
     // const siteName = Parse.Config.current().get('SiteName')
     const siteName = 'site name'
 
@@ -41,12 +41,20 @@ const Login = () => {
                 url: serverUrl + "users/login", // route name
               })
               .then((res)=>{
-                setloading(false)
-                setCookie('user_token', res.data.token, {path : '/', maxAge : 7200})
-                dispatch(setAlert({type:"success", msg:"Login Successful. Welcome " + res.data.email}))
-                dispatch(resetRecentFileList())
-                dispatch(setIsRendered(false))
-                dispatch(setUserTrigger())
+                
+                function delay(time) {
+                  return new Promise(resolve => setTimeout(resolve, time));
+                }
+
+                setCookie('user_token', res.data.token, {path : '/', maxAge : 259200})
+
+                delay(500).then(() => {
+                  dispatch(setAlert({type:"success", msg:"Login Successful. Welcome " + res.data.email}))
+                  dispatch(resetRecentFileList())
+                  dispatch(setIsRendered(false))
+                  dispatch(setUserTrigger())
+                  setloading(false)
+                });
               })
               .catch((err)=>{
                 setloading(false)

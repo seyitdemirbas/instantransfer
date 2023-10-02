@@ -6,7 +6,7 @@ import { NavLink, Link} from 'react-router-dom'
 import logo from '../logo.png';
 import { useSelector,useDispatch } from 'react-redux';
 import { setAlert, setUserTrigger } from '../store/slices/generalSlice';
-// import Parse from 'parse';
+import { useCookies } from 'react-cookie'
 import { resetRecentFileList } from '../store/slices/myFilesSlice';
 import { resetCurrentFileWi } from '../store/slices/filePageSlice';
 
@@ -20,6 +20,7 @@ function Header() {
     // const isVerified = isFetch ? (Parse.User.current() ? Parse.User.current().get('emailVerified') : true) : true
     const isVerified = true
     const dispatch = useDispatch()
+    const [cookies,setCookie,removeCookie] = useCookies(['user_token']);
 
     useEffect(() => {
         // const fetchCurrentUserDB = async () =>{
@@ -38,19 +39,10 @@ function Header() {
     let NavbarLinkClassNameActive = "block py-2 pr-4 pl-3 md:p-0 bg-blue-700 text-white dark:text-white md:bg-transparent md:text-blue-700"
 
     const handleLogOut = () => {
-        // Parse.User.logOut()
-        // .then((res)=>{
-        //     dispatch(resetRecentFileList())
-        //     dispatch(resetCurrentFileWi())
-        //     dispatch(setUserTrigger())
-        // })
-        // .catch(()=>{
-        //     const error = {
-        //         type: "error",
-        //         msg: "Something went wrong."
-        //     }
-        //     dispatch(setAlert(error))
-        // })
+        removeCookie('user_token')
+        dispatch(resetRecentFileList())
+        dispatch(resetCurrentFileWi())
+        dispatch(setUserTrigger())
     }
 
     const handleVerifyRequest = async (e) => {

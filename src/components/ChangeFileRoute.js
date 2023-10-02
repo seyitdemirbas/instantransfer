@@ -1,10 +1,9 @@
 import React,{useState,useEffect} from 'react'
-import Parse from 'parse'
 import { AiOutlineLink,AiFillEdit} from 'react-icons/ai';
 import { Button, Tooltip, TextInput,Spinner } from 'flowbite-react'
 import { IconContext } from "react-icons";
 import { changeFileRouteNameDB } from '../store/slices/filePageSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import { useComponentDidMount } from './useComponentDidMount';
 import { useNavigate } from 'react-router';
 import { setAlert } from '../store/slices/generalSlice';
@@ -15,6 +14,7 @@ const ChangeFileRoute = (props) => {
     const dispatch = useDispatch()
     const isComponentMounted = useComponentDidMount()
     const navigate = useNavigate()
+    const currentUserID = useSelector((state) => state.general.user.info.id)
 
     const locationHost = (window.location.host.indexOf('www.') && window.location.host) || window.location.host.replace('www.', '')
     const locationPathName = window.location.pathname;
@@ -66,7 +66,7 @@ const ChangeFileRoute = (props) => {
                     </Tooltip>
                 </div>
             }
-            {/* { props.currentFile.createdBy === Parse.User.current().id && */
+            {props.currentFile.createdBy === currentUserID &&
             <React.Fragment>
                 {!isShown &&
                     <div onClick={handleClick} className='cursor-pointer'>
